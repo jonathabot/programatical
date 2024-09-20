@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { League_Spartan } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const leagueSpartanFont = League_Spartan({ subsets: ["latin"] });
 
@@ -16,10 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={leagueSpartanFont.className}>
-      <body className="bg-zinc-800 flex items-center justify-center h-full md:px-12 lg:px-20 xl:px-52 2xl:px-64">
-        <div className="w-full h-full md:h-[calc(100vh)] md:max-w-[calc(100vw-2rem)] lg:max-h-[calc(100vw-2rem)] rounded-sm border-4 border-pgmt-blue overflow-hidden flex flex-col">
+      <body className="bg-zinc-800 flex flex-col h-screen justify-between px-4 md:px-12 lg:px-20 xl:px-52 2xl:px-64">
+        <Header />
+        <main className="mb-auto rounded-sm border-2 border-pgmt-blue flex itens-center justify-center text-slate-300">
           {children}
-        </div>
+        </main>
+        <Footer />
       </body>
     </html>
   );

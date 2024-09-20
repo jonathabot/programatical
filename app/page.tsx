@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { Metadata } from "next/types";
 
 export const metadata: Metadata = {
@@ -9,11 +9,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center flex-col bg-zinc-800">
-      <div className="flex justify-between items-center w-full px-10 my-8">
-        <Image src="/logoPgm.png" alt="Logo" width={200} height={50} />
-        <Button variant="default">Entrar</Button>
-      </div>
-    </main>
+    <>
+      <a>Página aaaaaaaaa</a>
+    </>
   );
 }
