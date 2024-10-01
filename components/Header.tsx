@@ -13,7 +13,10 @@ export default function Header() {
       exit={{ opacity: 0 }}
     >
       <header className="flex justify-between items-center h-10 py-10 sm:py-14">
-        <ProgramaticalLogoSVG />
+        <div className="cursor-pointer">
+          <ProgramaticalLogoSVG />
+        </div>
+
         <Button variant="default" className="m-2">
           Entrar
         </Button>

@@ -13,6 +13,10 @@ const config: Config = {
         foreground: "var(--foreground)",
         "pgmt-blue": "#03A9F4",
       },
+      backgroundImage: {
+        "radial-gradient-text-home":
+          "radial-gradient(circle, rgba(255,255,255,1) 0%, #999999 100%)",
+      },
     },
   },
   plugins: [],

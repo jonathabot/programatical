@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en" className={leagueSpartanFont.className}>
       <body className="bg-zinc-800 flex flex-col h-screen justify-between px-4 md:px-12 lg:px-20 xl:px-52 2xl:px-64">
         <Header />
-        <main className="mb-auto rounded-sm border-2 border-pgmt-blue flex itens-center justify-center text-slate-300">
+        <main className="mb-auto flex itens-center justify-center h-screen text-slate-300">
           {children}
         </main>
         <Footer />

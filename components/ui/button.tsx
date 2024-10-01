@@ -6,7 +6,7 @@ const button = tv({
   variants: {
     variant: {
       default:
-        "bg-pgmt-blue text-primary-foreground hover:bg-pgmt-blue/80 text-white",
+        "bg-pgmt-blue text-primary-foreground hover:bg-blue-400 text-white",
       white: "bg-white text-gray-900 hover:bg-gray-100 text-black",
       gray: "bg-gray-200 text-gray-900 hover:bg-gray-300 text-black",
     },
