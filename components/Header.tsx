@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import ProgramaticalLogoSVG from "./ProgramaticalLogoSVG";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -13,13 +14,17 @@ export default function Header() {
       exit={{ opacity: 0 }}
     >
       <header className="flex justify-between items-center h-10 py-10 sm:py-14">
-        <div className="cursor-pointer">
-          <ProgramaticalLogoSVG />
-        </div>
+        <Link href="/">
+          <div className="cursor-pointer">
+            <ProgramaticalLogoSVG />
+          </div>
+        </Link>
 
-        <Button variant="default" className="m-2">
-          Entrar
-        </Button>
+        <Link href="/login">
+          <Button variant="secondary" className="m-2">
+            Entrar
+          </Button>
+        </Link>
       </header>
     </motion.div>
   );
