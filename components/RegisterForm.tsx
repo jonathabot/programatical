@@ -1,20 +1,47 @@
 "use client";
 import { useState } from "react";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import GradientText from "./ui/gradient-text";
 import Link from "next/link";
+import { auth, googleProvider } from "@/firebase.config";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+
+  const [isLoadingButtonRegister, setIsLoadingButtonRegister] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoadingButtonRegister(true);
     // Handle register logic here
-    console.log("Register submitted", { email, password, keepLoggedIn });
+    signIn(email, password);
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoadingButtonRegister(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -53,15 +80,13 @@ export default function RegisterForm() {
         </div>
         <div className="flex items-center">
           <Checkbox
-            id="keep-logged-in"
-            checked={keepLoggedIn}
-            onCheckedChange={(checked) => setKeepLoggedIn(checked as boolean)}
+            id="accept-terms"
+            checked={acceptTerms}
+            onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
             className="border-gray-400"
+            required
           />
-          <label
-            htmlFor="keep-logged-in"
-            className="ml-2 text-sm text-gray-300"
-          >
+          <label htmlFor="accept-terms" className="ml-2 text-sm text-gray-300">
             Ao criar uma conta, você concorda com nossos Termos de Serviço e
             Política de Privacidade
           </label>
@@ -69,8 +94,10 @@ export default function RegisterForm() {
         <Button
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+          loading={isLoadingButtonRegister}
+          loadingText="Cadastrando..."
         >
-          Entrar
+          Cadastrar-se
         </Button>
       </form>
       <div className="relative">
@@ -81,7 +108,7 @@ export default function RegisterForm() {
           <span className="px-2 bg-zinc-800 text-gray-400">ou</span>
         </div>
       </div>
-      <Button variant="secondary" className="w-full">
+      <Button variant="secondary" className="w-full" onClick={signInWithGoogle}>
         <svg
           className="w-5 h-5 mr-2"
           viewBox="0 0 21 20"

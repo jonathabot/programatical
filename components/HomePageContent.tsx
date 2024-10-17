@@ -24,9 +24,9 @@ export default function HomePageContent() {
       </span>
 
       <div className="text-2xl flex justify-evenly w-full">
-        <Button variant="secondary" size="lg">
+        {/* <Button variant="secondary" size="lg">
           Mais informações
-        </Button>
+        </Button> */}
         <Link href="/register">
           <Button size="lg">Começar agora</Button>
         </Link>
