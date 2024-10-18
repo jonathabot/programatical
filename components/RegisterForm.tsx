@@ -8,6 +8,7 @@ import GradientText from "./ui/gradient-text";
 import Link from "next/link";
 import { auth, googleProvider } from "@/firebase.config";
 import { useRouter } from "next/navigation";
+import { FirebaseError } from "firebase/app";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -22,7 +23,6 @@ export default function RegisterForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoadingButtonRegister(true);
-    // Handle register logic here
     signUp(email, password);
   };
 
@@ -31,7 +31,30 @@ export default function RegisterForm() {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/");
     } catch (err) {
-      console.error(err);
+      setError(true);
+      if (err instanceof FirebaseError) {
+        const errorMessage = err.message;
+        const errorCode = err.code;
+
+        switch (errorCode) {
+          case "auth/weak-password":
+            setErrorMessage("The password is too weak.");
+            break;
+          case "auth/email-already-in-use":
+            setErrorMessage(
+              "This email address is already in use by another account."
+            );
+          case "auth/invalid-email":
+            setErrorMessage("This email address is invalid.");
+            break;
+          case "auth/operation-not-allowed":
+            setErrorMessage("Email/password accounts are not enabled.");
+            break;
+          default:
+            setErrorMessage(errorMessage);
+            break;
+        }
+      }
     } finally {
       setIsLoadingButtonRegister(false);
     }
@@ -101,6 +124,7 @@ export default function RegisterForm() {
         >
           Cadastrar-se
         </Button>
+        {error && <p className="ml-2 text-sm text-[#aa0000]">{errorMessage}</p>}
       </form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

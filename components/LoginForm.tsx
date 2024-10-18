@@ -1,16 +1,18 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase.config";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/firebase.config";
 import { FirebaseError } from "firebase/app";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import GradientText from "./ui/gradient-text";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
@@ -28,6 +30,7 @@ export default function LoginForm() {
   const signIn = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      router.push("/");
     } catch (err) {
       setError(true);
       if (err instanceof FirebaseError) {
@@ -64,6 +67,15 @@ export default function LoginForm() {
       console.error(err);
     } finally {
       setIsLoadingButtonLogin(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      router.push("/");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -122,7 +134,7 @@ export default function LoginForm() {
         >
           Entrar
         </Button>
-        {error && <p className="ml-2 text-sm text-red">{errorMessage}</p>}
+        {error && <p className="ml-2 text-sm text-[#aa0000]">{errorMessage}</p>}
       </form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
@@ -132,7 +144,7 @@ export default function LoginForm() {
           <span className="px-2 bg-zinc-800 text-gray-400">ou</span>
         </div>
       </div>
-      <Button variant="secondary" className="w-full">
+      <Button variant="secondary" className="w-full" onClick={signInWithGoogle}>
         <svg
           className="w-5 h-5 mr-2"
           viewBox="0 0 21 20"
