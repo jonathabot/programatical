@@ -18,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={leagueSpartanFont.className}>
+      <head>
+        <link rel="icon" href="favicon.svg" />
+      </head>
       <body className="bg-zinc-800 flex flex-col h-screen justify-between px-4 md:px-12 lg:px-20 xl:px-52 2xl:px-64">
         <Header />
         <main className="mb-auto flex itens-center justify-center h-screen text-slate-300">
