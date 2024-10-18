@@ -1,20 +1,70 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase.config";
+import { FirebaseError } from "firebase/app";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import GradientText from "./ui/gradient-text";
-import Link from "next/link";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [isLoadingButtonLogin, setIsLoadingButtonLogin] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login submitted", { email, password, keepLoggedIn });
+    setIsLoadingButtonLogin(true);
+    signIn(email, password);
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError(true);
+      if (err instanceof FirebaseError) {
+        const errorCode = err.code;
+        switch (errorCode) {
+          case "auth/invalid-credential":
+            setErrorMessage("This email address or password is invalid.");
+            break;
+          case "auth/invalid-email":
+            setErrorMessage("This email address is invalid.");
+            break;
+          case "auth/user-disabled":
+            setErrorMessage(
+              "This email address is disabled by the administrator."
+            );
+            break;
+          case "auth/user-not-found":
+            setErrorMessage("This email address is not registered.");
+            break;
+          case "auth/wrong-password":
+            setErrorMessage(
+              "The password is invalid or the user does not have a password."
+            );
+            break;
+          default:
+            setErrorMessage(
+              "An error occurred during sign in. Please try again."
+            );
+            break;
+        }
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+      console.error(err);
+    } finally {
+      setIsLoadingButtonLogin(false);
+    }
   };
 
   return (
@@ -68,9 +118,11 @@ export default function LoginForm() {
         <Button
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+          loading={isLoadingButtonLogin}
         >
           Entrar
         </Button>
+        {error && <p className="ml-2 text-sm text-red">{errorMessage}</p>}
       </form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

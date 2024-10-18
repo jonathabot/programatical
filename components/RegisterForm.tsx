@@ -14,6 +14,8 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [isLoadingButtonRegister, setIsLoadingButtonRegister] = useState(false);
 
@@ -21,10 +23,10 @@ export default function RegisterForm() {
     e.preventDefault();
     setIsLoadingButtonRegister(true);
     // Handle register logic here
-    signIn(email, password);
+    signUp(email, password);
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/");
