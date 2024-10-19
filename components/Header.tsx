@@ -18,6 +18,7 @@ export default function Header() {
     if (user) {
       console.log(user);
       setUser(user);
+      router.push("/initialpage");
     } else {
       setUser(null);
     }
@@ -41,24 +42,22 @@ export default function Header() {
       exit={{ opacity: 0 }}
     >
       <header className="flex justify-between items-center h-10 py-10 sm:py-14">
-        <Link href="/">
+        <Link href={user ? "/initialpage" : "/"}>
           <div className="cursor-pointer">
             <ProgramaticalLogoSVG />
           </div>
         </Link>
 
-        {pathname == "/" || pathname == "/register" ? (
+        {user ? (
+          <Button variant="secondary" className="m-2" onClick={userSignOut}>
+            Sair
+          </Button>
+        ) : pathname === "/" || pathname === "/register" ? (
           <Link href="/login">
             <Button variant="secondary" className="m-2">
               Entrar
             </Button>
           </Link>
-        ) : null}
-
-        {user ? (
-          <Button variant="secondary" className="m-2" onClick={userSignOut}>
-            Sair
-          </Button>
         ) : null}
       </header>
     </motion.div>

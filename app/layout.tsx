@@ -3,6 +3,7 @@ import { League_Spartan } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const leagueSpartanFont = League_Spartan({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <Header />
         <main className="mb-auto flex itens-center justify-center h-screen text-slate-300">
           {children}
+          <Toaster />
         </main>
         <Footer />
       </body>

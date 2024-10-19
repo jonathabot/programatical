@@ -1,23 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import GradientText from "./ui/gradient-text";
 import Link from "next/link";
-import { auth } from "@/firebase.config";
-import { useRouter } from "next/navigation";
 
 export default function HomePageContent() {
-  const router = useRouter();
-  // Checando se o usuário está logado
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      console.log(user);
-      router.push("/initialpage");
-    } else {
-      console.log("Not logged yet.");
-    }
-  });
-
   return (
     <motion.div
       initial={{ opacity: 0 }}

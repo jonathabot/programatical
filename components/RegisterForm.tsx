@@ -29,7 +29,7 @@ export default function RegisterForm() {
   const signUp = async (email: string, password: string) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/");
+      router.push("/initialpage");
     } catch (err) {
       setError(true);
       if (err instanceof FirebaseError) {
@@ -63,7 +63,7 @@ export default function RegisterForm() {
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push("/");
+      router.push("/initialpage");
     } catch (err) {
       console.error(err);
     }

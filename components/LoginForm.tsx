@@ -30,7 +30,7 @@ export default function LoginForm() {
   const signIn = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
+      router.push("/initialpage");
     } catch (err) {
       setError(true);
       if (err instanceof FirebaseError) {
@@ -73,7 +73,7 @@ export default function LoginForm() {
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push("/");
+      router.push("/initialpage");
     } catch (err) {
       console.error(err);
     }
