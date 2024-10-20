@@ -16,11 +16,22 @@ export default function Header() {
 
   auth.onAuthStateChanged((user) => {
     if (user) {
-      console.log(user);
       setUser(user);
-      router.push("/initialpage");
     } else {
       setUser(null);
+    }
+
+    if (user && pathname === "/") {
+      router.push("/initialpage");
+    }
+
+    if (
+      !user &&
+      pathname !== "/" &&
+      pathname !== "/login" &&
+      pathname !== "/register"
+    ) {
+      router.push("/");
     }
   });
 

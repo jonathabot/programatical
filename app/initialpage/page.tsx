@@ -1,7 +1,6 @@
 import CursosDisponiveis from "@/components/CursosDisponiveis";
 import CursosEmAndamento from "@/components/CursosEmAndamento";
 import Ranking from "@/components/Ranking";
-import GradientText from "@/components/ui/gradient-text";
 
 export default function InitialPage() {
   return (

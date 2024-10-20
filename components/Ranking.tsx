@@ -58,7 +58,7 @@ const rankingData = [
 export default function Ranking() {
   return (
     <>
-      <div className="bg-slate-50 rounded-lg w-[350px] text-center text-slate-700">
+      <div className="bg-slate-50 rounded-lg w-[350px] text-center text-slate-700 select-none">
         <Table>
           <TableHeader>
             <TableRow>
