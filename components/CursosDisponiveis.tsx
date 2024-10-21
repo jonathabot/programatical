@@ -1,9 +1,6 @@
-// components/ui/CursosDisponiveis.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
-import routingToCourse from "@/hooks/route-to-course";
 import GradientText from "./ui/gradient-text";
 import { getAvailableCourses } from "@/lib/firebase/courses";
 import { Curso } from "@/types/courses"; // Importando a interface

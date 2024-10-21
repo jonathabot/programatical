@@ -1,6 +1,5 @@
 "use client";
 
-import routingToCourse from "@/hooks/route-to-course";
 import GradientText from "./ui/gradient-text";
 import { useEffect, useState } from "react";
 import { Curso } from "@/types/courses";

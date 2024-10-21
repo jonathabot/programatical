@@ -29,15 +29,17 @@ export default function HomePageContent() {
 
       <span className="text-base md:text-xl text-gray-300 text-center">
         Conteúdos como:{" "}
-        <Typewriter
-          words={topics}
-          loop={0}
-          cursor
-          cursorStyle="_"
-          typeSpeed={70}
-          deleteSpeed={100}
-          delaySpeed={2000}
-        />
+        <span className="underline">
+          <Typewriter
+            words={topics}
+            loop={0}
+            cursor
+            cursorStyle="_"
+            typeSpeed={70}
+            deleteSpeed={100}
+            delaySpeed={2000}
+          />
+        </span>
       </span>
 
       <div className="text-2xl flex justify-evenly w-full">
