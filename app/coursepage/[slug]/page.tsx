@@ -1,5 +1,8 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Lock, PlayCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type SlugProps = {
   params: {
@@ -8,12 +11,17 @@ type SlugProps = {
 };
 
 export default async function CoursePage({ params: { slug } }: SlugProps) {
+  const router = useRouter();
   const modules = [
     { id: 1, name: "Módulo 1", isActive: true },
     { id: 2, name: "Módulo 2", isActive: false },
     { id: 3, name: "Módulo 3", isActive: false },
     { id: 4, name: "Módulo 4", isActive: false },
   ];
+
+  const handleModuleClick = (moduleId: number) => {
+    router.push(`/coursepage/${slug}/modulopage/${moduleId}`);
+  };
 
   return (
     <div className="w-full max-w-md bg-zinc-800 text-white p-6 rounded-lg">
@@ -38,6 +46,7 @@ export default async function CoursePage({ params: { slug } }: SlugProps) {
                 ? "bg-zinc-700 text-white"
                 : "text-zinc-400 hover:bg-zinc-700/50 hover:text-white"
             }`}
+            onClick={() => handleModuleClick(module.id)}
           >
             <span className="flex items-center gap-3">
               <span className="w-6 text-center text-sm">{module.id}</span>
