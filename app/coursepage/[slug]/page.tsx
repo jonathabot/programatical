@@ -10,7 +10,7 @@ type SlugProps = {
   };
 };
 
-export default async function CoursePage({ params: { slug } }: SlugProps) {
+export default function CoursePage({ params: { slug } }: SlugProps) {
   const router = useRouter();
   const modules = [
     { id: 1, name: "Módulo 1", isActive: true },

@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { auth } from "@/firebase.config";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User as FirebaseUser, signOut } from "firebase/auth";
 
 export default function Header() {
@@ -14,32 +14,34 @@ export default function Header() {
   const router = useRouter();
   const [user, setUser] = useState<FirebaseUser | null>(null);
 
-  auth.onAuthStateChanged((user) => {
-    if (user) {
+  useEffect(() => {
+    // Executa apenas no lado do cliente
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
-    } else {
-      setUser(null);
-    }
 
-    if (user && pathname === "/") {
-      router.push("/initialpage");
-    }
+      if (user && pathname === "/") {
+        router.push("/initialpage");
+      }
 
-    if (
-      !user &&
-      pathname !== "/" &&
-      pathname !== "/login" &&
-      pathname !== "/register"
-    ) {
-      router.push("/");
-    }
-  });
+      if (
+        !user &&
+        pathname !== "/" &&
+        pathname !== "/login" &&
+        pathname !== "/register"
+      ) {
+        router.push("/");
+      }
+    });
+
+    // Limpeza do listener quando o componente desmonta
+    return () => unsubscribe();
+  }, [pathname, router]);
 
   const userSignOut = async () => {
     try {
       await signOut(auth);
     } catch (err) {
-      console.log(auth);
+      console.log(err);
     } finally {
       router.push("/");
     }
