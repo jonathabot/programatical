@@ -2,25 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Lock, PlayCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-type SlugProps = {
-  params: {
-    slug: string;
-  };
-};
-
-export default function CoursePage({ params: { slug } }: SlugProps) {
+export default function CoursePage() {
   const router = useRouter();
+  const { slug } = useParams();
   const modules = [
-    { id: 1, name: "Módulo 1", isActive: true },
-    { id: 2, name: "Módulo 2", isActive: false },
-    { id: 3, name: "Módulo 3", isActive: false },
-    { id: 4, name: "Módulo 4", isActive: false },
+    { id: "12fadfasc", name: "Módulo 1", isActive: true, order: 1 },
+    { id: "12302193", name: "Módulo 2", isActive: false, order: 2 },
+    { id: "aojdfasid9fcc-12", name: "Módulo 3", isActive: false, order: 3 },
+    { id: "asd213123-12", name: "Módulo 4", isActive: false, order: 4 },
   ];
 
-  const handleModuleClick = (moduleId: number) => {
-    router.push(`/coursepage/${slug}/modulopage/${moduleId}`);
+  const handleModuleClick = (moduloslug: string) => {
+    router.push(`/coursepage/${slug}/modulopage/${moduloslug}`);
   };
 
   return (
@@ -51,7 +46,7 @@ export default function CoursePage({ params: { slug } }: SlugProps) {
             onClick={() => handleModuleClick(module.id)}
           >
             <span className="flex items-center gap-3">
-              <span className="w-6 text-center text-sm">{module.id}</span>
+              <span className="w-6 text-center text-sm">{module.order}</span>
               <span className="text-base">{module.name}</span>
             </span>
             {module.isActive ? (
