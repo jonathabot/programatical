@@ -1,70 +1,86 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { Lock, PlayCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { EtapaPerguntaMultiplaEscolha, EtapaTexto } from "@/components/Etapas";
 
-export default function ModuloPage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+interface Lesson {
+  id: number;
+  title: string;
+  isUnlocked: boolean;
+}
 
-  const content =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam. Magna exercitation reprehenderit magna cillum ullamco consequat quis nostrud exercitation excepteur magna. Exercitation occaecat adipisicing irure do sunt amet. Ut nostrud reprehenderit sunt cillum sint consectetur cupidatat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+interface CourseModuleStructureProps {
+  courseTitle: string;
+  moduleNumber: number;
+  lessons: Lesson[];
+}
 
-  const question = "O que é arquitetura de software?";
-  const options = [
-    "A arte de construir edifícios virtuais no mundo digital.",
-    "O processo de criar diagramas bonitos e coloridos que ninguém realmente entende.",
-    "Uma um quebra-cabeças gigante.",
-    "O processo de design e organização de um sistema de software.",
-  ];
-  const correctAnswer = 3;
+export default function ModuloPage({
+  courseTitle = "Arquitetura de Software",
+  moduleNumber = 1,
+  lessons = [
+    { id: 1, title: "Aula 1", isUnlocked: true },
+    { id: 2, title: "Aula 2", isUnlocked: false },
+    { id: 3, title: "Aula 3", isUnlocked: false },
+    { id: 4, title: "Aula 4", isUnlocked: false },
+    { id: 5, title: "Aula 5", isUnlocked: false },
+  ],
+}: CourseModuleStructureProps) {
+  const router = useRouter();
+
+  const handleLessonClick = (lessonId: number) => {
+    router.push(
+      `/coursepage/${courseTitle}/modulopage/${moduleNumber}/lesson/${lessonId}`
+    );
+  };
 
   return (
-    <div className="flex items-center justify-center p-4 max-w-2xl">
-      <div className="w-full text-white overflow-hidden h-2/3">
-        <div className="p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-md">Etapa {currentStep} (1 de 10)</span>
-            <div className="flex flex-col items-end">
-              <span className="text-sm">Arquitetura de Software</span>
-              <span className="text-sm">Modulo 1</span>
+    <div className="bg-zinc-800 text-white p-6 rounded-lg mx-auto">
+      <div className="w-full mb-6 flex items-center justify-between">
+        <h2 className="text-lg font-normal mb-1">Curso: {courseTitle}</h2>
+        <p className="text-sm text-zinc-400">Módulo: {moduleNumber}</p>
+      </div>
+      <div className="flex flex-col gap-4">
+        {lessons
+          .reduce((rows, lesson, index) => {
+            if (index % 2 === 0) {
+              rows.push(lessons.slice(index, index + 2));
+            }
+            return rows;
+          }, [] as Lesson[][])
+          .map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              className="flex items-center justify-start gap-4"
+            >
+              {row.map((lesson, lessonIndex) => (
+                <>
+                  <Button
+                    key={lesson.id}
+                    variant="ghost"
+                    className={`flex items-center justify-between bg-zinc-700 rounded-lg p-3 w-48 ${
+                      lesson.isUnlocked
+                        ? "text-white"
+                        : "text-zinc-400 hover:bg-zinc-700/50 hover:text-white"
+                    }`}
+                    onClick={() => handleLessonClick(lesson.id)}
+                  >
+                    <span className="mr-2">{lesson.title}</span>
+                    {lesson.isUnlocked ? (
+                      <PlayCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Lock className="w-5 h-5" />
+                    )}
+                  </Button>
+                  {lessonIndex === 0 && row.length > 1 && (
+                    <div className="w-8 h-0.5 bg-zinc-600" />
+                  )}
+                </>
+              ))}
             </div>
-          </div>
-          <Progress
-            value={currentStep * 10}
-            className="h-2 bg-zinc-700"
-            indicatorColor="bg-green-500"
-          />
-        </div>
-        <div className="px-4">
-          {currentStep === 1 ? (
-            <EtapaTexto content={content} />
-          ) : (
-            <EtapaPerguntaMultiplaEscolha
-              question={question}
-              options={options}
-              correctAnswer={correctAnswer}
-              onSelect={setSelectedAnswer}
-            />
-          )}
-        </div>
-        <div className="flex justify-around p-4 border-t border-zinc-700 mt-4">
-          <Button
-            variant="outline"
-            className="text-white border-zinc-700 hover:bg-zinc-700"
-            onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-          >
-            {currentStep === 1 ? "Sair" : "Anterior"}
-          </Button>
-          <Button
-            className="bg-cyan-500 hover:bg-cyan-600"
-            onClick={() => setCurrentStep(currentStep + 1)}
-          >
-            Próximo
-          </Button>
-        </div>
+          ))}
       </div>
     </div>
   );

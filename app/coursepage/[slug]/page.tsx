@@ -29,7 +29,9 @@ export default function CoursePage({ params: { slug } }: SlugProps) {
         <h2 className="text-lg font-normal mb-1">
           Curso: Arquitetura de Software
         </h2>
-        <p className="text-sm text-zinc-400">Módulo: 0/{modules.length}</p>
+        <p className="text-sm text-zinc-400">
+          Módulos Concluidos: 0/{modules.length}
+        </p>
       </div>
       <div className="w-full mb-6 flex items-center justify-center">
         <p className="text-sm text-zinc-400">
