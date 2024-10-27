@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
+  AulaConcluida,
   EtapaPerguntaArraste,
   EtapaPerguntaMultiplaEscolha,
   EtapaTexto,
@@ -122,20 +123,25 @@ export default function ModuloPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isVerified, setIsVerified] = useState<boolean>(false);
 
-  const etapaAtual = aulaSlugEtapas.etapas[currentStep - 1]; // Obtemos a etapa atual com base em currentStep
+  const etapaAtual = aulaSlugEtapas.etapas[currentStep - 1];
+
+  // Verificar se a aula foi concluída
+  const isCompleted = currentStep > aulaSlugEtapas.etapas.length;
 
   // Calcular progresso baseado no número de etapas
-  const progressValue =
-    ((currentStep - 1) / (aulaSlugEtapas.etapas.length - 1)) * 95;
+  const progressValue = isCompleted
+    ? 100
+    : ((currentStep - 1) / (aulaSlugEtapas.etapas.length - 1)) * 95;
 
   return (
     <div className="flex items-center justify-center p-4 w-1/2">
       <div className="w-full text-white h-full">
         <div className="h-[10%]">
-          <div className="flex items-center justify-between">
+          <div className="flex items-end justify-between">
             <span className="text-md">
-              Etapa {currentStep} ({currentStep} de{" "}
-              {aulaSlugEtapas.etapas.length})
+              {!isCompleted
+                ? `Etapa ${currentStep} (${currentStep} de ${aulaSlugEtapas.etapas.length}) `
+                : "Etapas concluídas!"}
             </span>
             <div className="flex flex-col items-end">
               <span className="text-sm">Arquitetura de Software</span>
@@ -150,7 +156,9 @@ export default function ModuloPage() {
         </div>
 
         <div className="h-[80%] flex items-center justify-center">
-          {etapaAtual.tipo === "texto" ? (
+          {isCompleted ? (
+            <AulaConcluida />
+          ) : etapaAtual.tipo === "texto" ? (
             <EtapaTexto
               content={etapaAtual.conteudo ? etapaAtual.conteudo : ""}
             />
@@ -194,7 +202,14 @@ export default function ModuloPage() {
             {currentStep === 1 ? "Sair" : "Anterior"}
           </Button>
 
-          {etapaAtual.tipo !== "texto" && !isVerified ? (
+          {isCompleted ? (
+            <Button
+              className="bg-cyan-500 hover:bg-cyan-600"
+              onClick={handleExitAula}
+            >
+              Próximo
+            </Button>
+          ) : etapaAtual.tipo !== "texto" && !isVerified ? (
             <Button
               className="bg-slate-600 hover:bg-slate-700"
               onClick={() => setIsVerified(true)}
@@ -211,7 +226,7 @@ export default function ModuloPage() {
                 setIsVerified(false);
               }}
             >
-              Próximo
+              {isCompleted ? "Continuar" : "Próximo"}
             </Button>
           )}
         </div>
