@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import GradientText from "./ui/gradient-text";
 import { getAvailableCourses } from "@/lib/firebase/courses";
-import { Curso } from "@/types/courses"; // Importando a interface
+import { Curso } from "@/types/types"; // Importando a interface
 import { Skeleton } from "./ui/skeleton";
 import useCoursePage from "@/hooks/route-to-course";
 
@@ -36,9 +36,9 @@ export default function CursosDisponiveis() {
         ) : null}
 
         {availableCourses?.map((course) => (
-          <div className="relative w-32 h-32" key={course.id}>
+          <div className="relative w-32 h-32 mr-6" key={course.id}>
             {/* Blue border circle */}
-            <div className="absolute inset-0 rounded-full border-4 border-[#00C2FF]"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-jyunBlue"></div>
 
             {/* Gray inner circle with content */}
             <div

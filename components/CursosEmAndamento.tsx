@@ -2,7 +2,7 @@
 
 import GradientText from "./ui/gradient-text";
 import { useEffect, useState } from "react";
-import { Curso } from "@/types/courses";
+import { Curso } from "@/types/types";
 import { getOnGoingCourses } from "@/lib/firebase/courses";
 import { Skeleton } from "./ui/skeleton";
 import useCoursePage from "@/hooks/route-to-course";
@@ -36,7 +36,10 @@ export default function CursosEmAndamento() {
         ) : null}
 
         {onGoingCourses?.map((course) => (
-          <div className="relative w-36 h-36 cursor-pointer" key={course.id}>
+          <div
+            className="relative w-36 h-36 cursor-pointer mr-6"
+            key={course.id}
+          >
             {/* Green border circle */}
             <div className="absolute inset-0 rounded-full border-4 border-[#00FF19]"></div>
 

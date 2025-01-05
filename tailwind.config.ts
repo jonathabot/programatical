@@ -14,6 +14,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        jyunBlue: "#00C2FF",
+        pmgGray: "#898989",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

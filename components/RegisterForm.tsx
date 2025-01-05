@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import GradientText from "./ui/gradient-text";
 import Link from "next/link";
-import { auth, googleProvider } from "@/firebase.config";
+import { auth, db, googleProvider } from "@/firebase.config";
 import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app";
+import { doc, setDoc } from "firebase/firestore";
+import { generateRandomPlaceholderUsername } from "@/lib/utils";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -28,7 +30,21 @@ export default function RegisterForm() {
 
   const signUp = async (email: string, password: string) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const registredUser = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      // Salvar o usuário no Firestore
+      await setDoc(doc(db, "users", registredUser.user.uid), {
+        email: registredUser.user.email,
+        createdAt: new Date().toISOString(),
+        uid: registredUser.user.uid,
+        userRole: 1,
+        userName: generateRandomPlaceholderUsername(),
+      });
+
       router.push("/initialpage");
     } catch (err) {
       setError(true);
@@ -62,7 +78,17 @@ export default function RegisterForm() {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const userCredential = await signInWithPopup(auth, googleProvider);
+
+      // Salvar o usuário no Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: userCredential.user.email,
+        createdAt: new Date().toISOString(),
+        uid: userCredential.user.uid,
+        userRole: 1,
+        userName: generateRandomPlaceholderUsername(),
+      });
+
       router.push("/initialpage");
     } catch (err) {
       console.error(err);
