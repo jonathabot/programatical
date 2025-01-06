@@ -16,6 +16,8 @@ module.exports = {
       colors: {
         jyunBlue: "#00C2FF",
         pmgGray: "#898989",
+        pmgRed: "#ff0000",
+        pmgInfoBlue: "#0004ff",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
