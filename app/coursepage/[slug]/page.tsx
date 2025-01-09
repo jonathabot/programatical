@@ -27,7 +27,6 @@ export default function CoursePage() {
         const course = await getCourseById(courseId);
         setCourseModules(modules);
         setCourseInfo(course);
-        console.log(modules);
       } catch (err) {
         console.log(err);
       }
