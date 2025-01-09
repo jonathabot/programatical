@@ -5,6 +5,13 @@ export interface Curso {
   descricao: string;
 }
 
+export interface Course {
+  id: string;
+  courseId: string;
+  courseName: string;
+  courseDescription: string;
+}
+
 export interface CourseModule {
   id: string;
   isActive: boolean;

@@ -29,6 +29,7 @@ export default function RootLayout({
           <Toaster />
         </main>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

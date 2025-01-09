@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
@@ -35,7 +35,9 @@ import {
 import type { TableProps } from "antd/es/table";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-
+import { useToast } from "@/hooks/use-toast";
+import { generateShortId } from "@/lib/utils";
+import { postCourse } from "@/lib/firebase/courses";
 interface CourseInformation {
   idCourse: string;
   courseName: string;
@@ -66,6 +68,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function CourseManagement() {
   const [isModalCreateCourseOpen, setIsModalCreateCourseOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -91,10 +94,34 @@ export default function CourseManagement() {
     }
   };
 
-  const handleCreateCourse = async (values: FormValues) => {
+  const handleCreateCourse = async ({
+    courseName,
+    description,
+  }: FormValues) => {
     setIsSubmitting(true);
-    console.log("Creating course with values:", values);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const newCourse = {
+      courseName: courseName,
+      courseId: generateShortId(),
+      courseDescription: description,
+    };
+
+    console.log("Criando novo curso: ", newCourse);
+
+    const courseId = await postCourse(newCourse);
+
+    if (courseId) {
+      toast({
+        title: "Sucesso!",
+        description: "Curso criado com sucesso.",
+      });
+    } else {
+      toast({
+        title: "Erro!",
+        description: "Ocorreu um erro ao criar o curso.",
+      });
+    }
+
     handleOk();
     setIsSubmitting(false);
   };
@@ -293,7 +320,7 @@ export default function CourseManagement() {
       </div>
 
       <Modal
-        title="Criar um novo curso"
+        title="Formulário - Criar um novo curso"
         open={isModalCreateCourseOpen}
         onCancel={handleCancel}
         footer={null}
@@ -301,14 +328,14 @@ export default function CourseManagement() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleCreateCourse)}
-            className="space-y-4 mt-7"
+            className="space-y-4 mt-4 p-4 bg-zinc-800 rounded-lg"
           >
             <FormField
               control={form.control}
               name="courseName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome do Curso</FormLabel>
+                  <FormLabel className="text-white">Nome do Curso</FormLabel>
                   <FormControl>
                     <ShadcnInput
                       placeholder="Digite o nome do curso"
@@ -324,7 +351,7 @@ export default function CourseManagement() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição</FormLabel>
+                  <FormLabel className="text-white">Descrição</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Digite a descrição do curso"
@@ -339,7 +366,7 @@ export default function CourseManagement() {
             <div className="flex justify-end space-x-4">
               <ShadcnButton
                 type="button"
-                variant="outline"
+                variant="secondary"
                 onClick={handleCancel}
                 disabled={isSubmitting}
               >

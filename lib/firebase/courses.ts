@@ -1,8 +1,8 @@
 // lib/firebase/courses.ts
 
 import { db } from "@/firebase.config"; // Importa a configuração do Firebase
-import { getDocs, collection, doc, getDoc } from "firebase/firestore";
-import { CourseModule, Curso } from "@/types/types"; // Importa a interface de tipos
+import { getDocs, collection, doc, getDoc, addDoc } from "firebase/firestore";
+import { CourseModule, Curso, Course } from "@/types/types"; // Importa a interface de tipos
 
 const getCourses = async (): Promise<Curso[]> => {
   const coursesCollectionRef = collection(db, "cursos");
@@ -61,6 +61,21 @@ const getModules = async (courseId: string) => {
 
   return modules;
 };
+
+export const postCourse = async (
+  newCourse: Omit<Course, "id">
+): Promise<string | null> => {
+  try {
+    const coursesCollectionRef = collection(db, "courses"); // Referência à coleção "cursos"
+    const docRef = await addDoc(coursesCollectionRef, newCourse); // Adiciona o curso ao Firestore
+    console.log("Curso criado com sucesso. ID do curso:", docRef.id);
+    return docRef.id; // Retorna o ID do documento criado
+  } catch (error) {
+    console.error("Erro ao criar o curso:", error);
+    return null;
+  }
+};
+
 // Função para buscar os cursos disponíveis para o usuário.
 export const getAvailableCourses = async () => {
   const courses = await getCourses();
