@@ -294,11 +294,14 @@ export default function CourseManagement() {
   return (
     <>
       <div className="w-4/5 h-full">
-        <div className="relative flex items-center justify-center mb-4">
-          <h1 className="text-center text-5xl">Gerenciamento de Cursos</h1>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-3xl text-zinc-200">
+            Gerenciamento de Cursos
+          </span>
+
           <ShadcnButton
             variant="green"
-            className="absolute right-4 gap-2"
+            className="gap-2 flex items-center justify-center"
             onClick={handleCreateNewCourse}
           >
             <PlusOutlined />

@@ -2,14 +2,14 @@
 
 import GradientText from "./ui/gradient-text";
 import { useEffect, useState } from "react";
-import { Curso } from "@/types/types";
+import { Course } from "@/types/types";
 import { getOnGoingCourses } from "@/lib/firebase/courses";
 import { Skeleton } from "./ui/skeleton";
 import useCoursePage from "@/hooks/route-to-course";
 
-export default function CursosEmAndamento() {
+export default function OngoingCourses() {
   const navigateToCourse = useCoursePage();
-  const [onGoingCourses, setOnGoingCourses] = useState<Curso[] | null>([]);
+  const [onGoingCourses, setOnGoingCourses] = useState<Course[] | null>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -17,7 +17,7 @@ export default function CursosEmAndamento() {
         const courses = await getOnGoingCourses();
         setOnGoingCourses(courses);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 
@@ -49,7 +49,7 @@ export default function CursosEmAndamento() {
               onClick={() => navigateToCourse(course.id)}
             >
               <span className="text-gray-500 text-sm px-4 leading-3">
-                {course.nomeCurso}
+                {course.courseName}
               </span>
               <span className="text-gray-600 text-3xl mt-2">10%</span>
             </div>

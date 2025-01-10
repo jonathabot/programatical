@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { getCourseById, getCourseModules } from "@/lib/firebase/courses";
-import { CourseModule, Curso } from "@/types/types";
+import { Course, CourseModule } from "@/types/types";
 import { Lock, PlayCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export default function CoursePage() {
   const [courseModules, setCourseModules] = useState<CourseModule[] | null>(
     null
   );
-  const [courseInfo, setCourseInfo] = useState<Curso | null>(null);
+  const [courseInfo, setCourseInfo] = useState<Course | null>(null);
 
   const handleModuleClick = (moduloslug: string) => {
     router.push(`/coursepage/${slug}/modulopage/${moduloslug}`);
@@ -25,6 +25,7 @@ export default function CoursePage() {
       try {
         const modules = await getCourseModules(courseId);
         const course = await getCourseById(courseId);
+        console.log(course);
         setCourseModules(modules);
         setCourseInfo(course);
       } catch (err) {
@@ -38,7 +39,7 @@ export default function CoursePage() {
     <div className="w-1/2 text-white p-6">
       <div className="w-full mb-6 flex items-center justify-between">
         <h2 className="text-lg font-normal mb-1">
-          Curso: {courseInfo?.nomeCurso}
+          Curso: {courseInfo?.courseName}
         </h2>
         <p className="text-sm text-zinc-400">
           Módulos Concluidos: 0/{courseModules?.length}
@@ -46,7 +47,7 @@ export default function CoursePage() {
       </div>
 
       <div className="w-full mb-6 flex items-center justify-center">
-        <p className="text-sm text-zinc-400">{courseInfo?.descricao}</p>
+        <p className="text-sm text-zinc-400">{courseInfo?.courseDescription}</p>
       </div>
 
       <div className="space-y-2 flex flex-col justify-center items-center">
@@ -74,9 +75,9 @@ export default function CoursePage() {
         ))}
         {courseModules?.length == 0 ? (
           <>
-            <span>
-              Módulos para esse curso ainda não estão disponiveis. Mais
-              informações em breve.
+            <span className="text-center mt-5 text-zinc-300">
+              Módulos para esse curso ainda não estão disponiveis. <br />
+              Mais informações em breve!
             </span>
           </>
         ) : null}

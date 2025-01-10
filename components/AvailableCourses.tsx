@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import GradientText from "./ui/gradient-text";
 import { getAvailableCourses } from "@/lib/firebase/courses";
-import { Curso } from "@/types/types"; // Importando a interface
 import { Skeleton } from "./ui/skeleton";
 import useCoursePage from "@/hooks/route-to-course";
+import { Course } from "@/types/types";
 
-export default function CursosDisponiveis() {
+export default function AvailableCourses() {
   const navigateToCourse = useCoursePage();
-  const [availableCourses, setAvailableCourses] = useState<Curso[] | null>([]);
+  const [availableCourses, setAvailableCourses] = useState<Course[] | null>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -17,7 +17,7 @@ export default function CursosDisponiveis() {
         const courses = await getAvailableCourses();
         setAvailableCourses(courses);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
 
@@ -46,7 +46,7 @@ export default function CursosDisponiveis() {
               onClick={() => navigateToCourse(course.id)}
             >
               <span className="text-gray-500 text-base px-4 leading-4">
-                {course.nomeCurso}
+                {course.courseName}
               </span>
             </div>
           </div>

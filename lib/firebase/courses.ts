@@ -1,41 +1,39 @@
-// lib/firebase/courses.ts
-
-import { db } from "@/firebase.config"; // Importa a configuração do Firebase
+import { db } from "@/firebase.config";
 import { getDocs, collection, doc, getDoc, addDoc } from "firebase/firestore";
-import { CourseModule, Curso, Course } from "@/types/types"; // Importa a interface de tipos
+import { CourseModule, Course } from "@/types/types";
 
-const getCourses = async (): Promise<Curso[]> => {
-  const coursesCollectionRef = collection(db, "cursos");
+const getCourses = async (): Promise<Course[]> => {
+  const coursesCollectionRef = collection(db, "courses");
   const response = await getDocs(coursesCollectionRef);
 
   const data = response.docs.map((doc) => {
     const courseData = doc.data();
     return {
       id: doc.id,
-      idCurso: courseData.idCurso || "",
-      nomeCurso: courseData.nomeCurso || "",
-      descricao: courseData.descricao || "",
+      courseId: courseData.courseId || "",
+      courseName: courseData.courseName || "",
+      courseDescription: courseData.courseDescription || "",
     };
   });
 
   return data;
 };
 
-const getCourse = async (courseId: string): Promise<Curso | null> => {
+const getCourse = async (courseId: string): Promise<Course | null> => {
   try {
-    const courseDocRef = doc(db, "cursos", courseId);
+    const courseDocRef = doc(db, "courses", courseId);
     const response = await getDoc(courseDocRef);
 
     if (response.exists()) {
       const courseData = response.data();
       return {
         id: response.id,
-        idCurso: courseData?.idCurso || "",
-        nomeCurso: courseData?.nomeCurso || "",
-        descricao: courseData?.descricao || "",
+        courseId: courseData?.courseId || "",
+        courseName: courseData?.courseName || "",
+        courseDescription: courseData?.courseDescription || "",
       };
     } else {
-      console.log("Curso não encontrado.");
+      console.error("Curso não encontrado.");
       return null;
     }
   } catch (error) {
@@ -45,8 +43,8 @@ const getCourse = async (courseId: string): Promise<Curso | null> => {
 };
 
 const getModules = async (courseId: string) => {
-  const courseDocRef = doc(db, "cursos", courseId);
-  const modulesCollectionRef = collection(courseDocRef, "modulos");
+  const courseDocRef = doc(db, "courses", courseId);
+  const modulesCollectionRef = collection(courseDocRef, "modules");
   const response = await getDocs(modulesCollectionRef);
 
   const modules: CourseModule[] = response.docs.map((doc) => {
@@ -66,8 +64,8 @@ export const postCourse = async (
   newCourse: Omit<Course, "id">
 ): Promise<string | null> => {
   try {
-    const coursesCollectionRef = collection(db, "courses"); // Referência à coleção "cursos"
-    const docRef = await addDoc(coursesCollectionRef, newCourse); // Adiciona o curso ao Firestore
+    const coursesCollectionRef = collection(db, "courses");
+    const docRef = await addDoc(coursesCollectionRef, newCourse);
     console.log("Curso criado com sucesso. ID do curso:", docRef.id);
     return docRef.id; // Retorna o ID do documento criado
   } catch (error) {
@@ -76,13 +74,11 @@ export const postCourse = async (
   }
 };
 
-// Função para buscar os cursos disponíveis para o usuário.
 export const getAvailableCourses = async () => {
   const courses = await getCourses();
   return courses;
 };
 
-// Função para buscar os cursos em andamento do usuário
 export const getOnGoingCourses = async () => {
   const courses = await getCourses();
   return courses;

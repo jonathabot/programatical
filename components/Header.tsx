@@ -33,13 +33,14 @@ export default function Header() {
         !user &&
         pathname !== "/" &&
         pathname !== "/login" &&
-        pathname !== "/register"
+        pathname !== "/register" &&
+        pathname !== "/about-us"
       ) {
         router.push("/");
       }
 
       if (!user?.uid) {
-        return console.log("User doesn't have an UID.");
+        return console.error("User doesn't have an UID.");
       }
 
       const fetchData = async () => {
@@ -50,7 +51,7 @@ export default function Header() {
             userName: data?.userName ?? "UndefinedPython921",
           });
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       };
 
@@ -69,7 +70,7 @@ export default function Header() {
     try {
       await signOut(auth);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       router.push("/");
     }
@@ -81,7 +82,7 @@ export default function Header() {
       await isUserAllowedToAdmPage(user?.uid);
       router.push("/administrationpage");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast({
         title: "Ooops! ❌❌",
         description:
@@ -105,7 +106,7 @@ export default function Header() {
             </div>
           </Link>
 
-          {pathname === "/administrationpage" ? (
+          {pathname.startsWith("/administrationpage") ? (
             <span className="text-pmgGray">Painel Administrativo</span>
           ) : null}
         </div>
@@ -116,13 +117,11 @@ export default function Header() {
               <span className="text-white font-medium leading-none">
                 {userInformations.userName}
               </span>
-
               {userInformations.userRole == "1" ? (
                 <span className="text-pmgGray font-medium leading-none text-sm">
                   Aluno
                 </span>
               ) : null}
-
               {userInformations.userRole == "5" ? (
                 <span
                   className="text-pmgGray font-medium leading-none text-sm hover:underline hover:cursor-pointer select-none"
@@ -132,15 +131,19 @@ export default function Header() {
                 </span>
               ) : null}
             </div>
-            <div className="relative group">
-              <img
-                src="/userPlaceholder.svg"
-                alt="User"
-                width={30}
-                height={30}
-                className="rounded-full group-hover:ring-2 group-hover:ring-gray-300 group-hover:p-1 transition-all duration-300 cursor-pointer"
-              />
-            </div>
+
+            <Link href={user ? "/userprofile" : "/"}>
+              <div className="relative group">
+                <img
+                  src="/userPlaceholder.svg"
+                  alt="User"
+                  width={30}
+                  height={30}
+                  className="rounded-full group-hover:ring-2 group-hover:ring-gray-300 group-hover:p-1 transition-all duration-300 cursor-pointer"
+                />
+              </div>
+            </Link>
+
             <Button variant="secondary" className="m-2" onClick={userSignOut}>
               Sair
             </Button>

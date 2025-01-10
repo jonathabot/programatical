@@ -1,10 +1,3 @@
-export interface Curso {
-  id: string;
-  idCurso: string;
-  nomeCurso: string;
-  descricao: string;
-}
-
 export interface Course {
   id: string;
   courseId: string;

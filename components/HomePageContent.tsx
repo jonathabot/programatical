@@ -20,7 +20,7 @@ export default function HomePageContent() {
       transition={{ ease: "easeIn", duration: 2 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col gap-16 w-[80%]"
+      className="flex flex-col gap-16 w-[80%] justify-center items-center"
     >
       <GradientText className="text-2xl md:text-6xl">
         Aprenda novos conceitos sobre <br /> Programação de forma única e
@@ -43,9 +43,11 @@ export default function HomePageContent() {
       </span>
 
       <div className="text-2xl flex justify-evenly w-full">
-        {/* <Button variant="secondary" size="lg">
-          Mais informações
-        </Button> */}
+        <Link href="/about-us">
+          <Button variant="secondary" size="lg">
+            Mais informações
+          </Button>
+        </Link>
         <Link href="/register">
           <Button size="lg">Começar agora</Button>
         </Link>
