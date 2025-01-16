@@ -18,6 +18,7 @@ module.exports = {
         pmgGray: "#898989",
         pmgRed: "#ff0000",
         pmgInfoBlue: "#0004ff",
+        pmgGreen: "#00FF19",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

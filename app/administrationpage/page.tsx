@@ -54,7 +54,7 @@ export default function AdministrationPage() {
           textColor="#ffffff"
           icon={<SettingOutlined />}
           name="Editar/Criar Modulos Avulsos"
-          goToUrl="/course-management"
+          goToUrl="/modules-management"
         />
 
         <AdmButton
