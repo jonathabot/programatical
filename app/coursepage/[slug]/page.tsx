@@ -1,7 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getCourseById, getCourseModules } from "@/lib/firebase/courses";
+import {
+  getCourseById,
+  getCourseWithModulesByDocId,
+} from "@/lib/firebase/courses";
 import { Course, CourseModule } from "@/types/types";
 import { Lock, PlayCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -23,10 +26,9 @@ export default function CoursePage() {
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const modules = await getCourseModules(courseId);
+        const modules = await getCourseWithModulesByDocId(courseId);
         const course = await getCourseById(courseId);
-        console.log(course);
-        setCourseModules(modules);
+        // setCourseModules(modules);
         setCourseInfo(course);
       } catch (err) {
         console.log(err);

@@ -39,6 +39,10 @@ export default function Header() {
         router.push("/");
       }
 
+      if (user && (pathname == "/login" || pathname == "/register")) {
+        router.push("/initialpage");
+      }
+
       if (!user?.uid) {
         return console.error("User doesn't have an UID.");
       }
@@ -48,7 +52,7 @@ export default function Header() {
           const data = await fetchUserData(user.uid);
           setUserInformations({
             userRole: data.userRole.toString(),
-            userName: data?.userName ?? "UndefinedPython921",
+            userName: data?.userName ?? "UndefinedPython123",
           });
         } catch (err) {
           console.error(err);

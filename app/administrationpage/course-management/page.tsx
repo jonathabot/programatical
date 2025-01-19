@@ -5,26 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input as ShadcnInput } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Modal,
-  Popconfirm,
-  Space,
-  Table,
-  TableColumnType,
-  InputRef,
-  Input as AntdInput,
-  Button,
-} from "antd";
+import { Modal, Popconfirm, Space, Table, TableColumnType, InputRef, Input as AntdInput, Button } from "antd";
 import {
   DeleteFilled,
   SettingFilled,
@@ -38,26 +22,11 @@ import { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import { useToast } from "@/hooks/use-toast";
 import { cn, generateShortId } from "@/lib/utils";
-import {
-  deactivateCourseRequest,
-  getAllCourses,
-  postCourse,
-} from "@/lib/firebase/courses";
+import { deactivateCourseRequest, getAllCourses, postCourse } from "@/lib/firebase/courses";
 import { Course, CourseModule } from "@/types/types";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -110,8 +79,7 @@ export default function CourseManagement() {
   const [isModalEditCourseOpen, setIsModalEditCourseOpen] = useState(false);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [isEditingCourse, setIsEditingCourse] = useState(false);
-  const [newCourseIdHighlightTrigger, setNewCourseIdHighlightTrigger] =
-    useState<String | null>(null);
+  const [newCourseIdHighlightTrigger, setNewCourseIdHighlightTrigger] = useState<String | null>(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -124,54 +92,34 @@ export default function CourseManagement() {
     router.push(`course-management/${moduloslug}`);
   };
 
-  const getColumnSearchProps = (
-    courseIndex: CourseIndex
-  ): TableColumnType<Course> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (courseIndex: CourseIndex): TableColumnType<Course> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <AntdInput
           ref={searchInput}
           placeholder={`Digite aqui...`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, courseIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, courseIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, courseIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, courseIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Procurar
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Apagar
           </Button>
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
     onFilter: (value, record) =>
       record[courseIndex]
         .toString()
@@ -239,10 +187,7 @@ export default function CourseManagement() {
           </div>
 
           <div className="cursor-pointer">
-            <Popconfirm
-              title="Deseja mesmo desativar esse curso?"
-              onConfirm={() => handleDeactivateCourse(record.id)}
-            >
+            <Popconfirm title="Deseja mesmo desativar esse curso?" onConfirm={() => handleDeactivateCourse(record.id)}>
               <a href="#">
                 <DeleteFilled
                   style={{ color: "#ff0000", fontSize: "16px" }}
@@ -302,10 +247,7 @@ export default function CourseManagement() {
       createCourseForm.reset();
     }
   };
-  const handleCreateCourse = async ({
-    courseName,
-    description,
-  }: CreateCourseFormValues) => {
+  const handleCreateCourse = async ({ courseName, description }: CreateCourseFormValues) => {
     setIsCreatingCourse(true);
 
     const newCourse = {
@@ -323,10 +265,7 @@ export default function CourseManagement() {
     console.log(courseId);
 
     if (courseId) {
-      setCourses((prevCourses) => [
-        { ...newCourse, id: courseId },
-        ...prevCourses,
-      ]);
+      setCourses((prevCourses) => [{ ...newCourse, id: courseId }, ...prevCourses]);
 
       setNewCourseIdHighlightTrigger(newCourse.courseId);
 
@@ -399,11 +338,7 @@ export default function CourseManagement() {
     setIsModalEditCourseOpen(false);
   };
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    courseIndex: CourseIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], courseIndex: CourseIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(courseIndex);
@@ -445,9 +380,7 @@ export default function CourseManagement() {
     <>
       <div className="w-4/5 h-full">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-3xl text-zinc-200">
-            Gerenciamento de Cursos
-          </span>
+          <span className="text-3xl text-zinc-200">Gerenciamento de Cursos</span>
 
           <ShadcnButton
             variant="green"
@@ -465,10 +398,7 @@ export default function CourseManagement() {
           rowKey="courseId"
           className="bg-white rounded-lg"
           rowClassName={(record) =>
-            newCourseIdHighlightTrigger &&
-            record.courseId == newCourseIdHighlightTrigger
-              ? "highlight-row"
-              : ""
+            newCourseIdHighlightTrigger && record.courseId == newCourseIdHighlightTrigger ? "highlight-row" : ""
           }
           locale={{
             triggerDesc: "Ordenar em ordem decrescente",
@@ -496,10 +426,7 @@ export default function CourseManagement() {
                 <FormItem>
                   <FormLabel className="text-white">Nome do Curso</FormLabel>
                   <FormControl>
-                    <ShadcnInput
-                      placeholder="Digite o nome do curso"
-                      {...field}
-                    />
+                    <ShadcnInput placeholder="Digite o nome do curso" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -512,11 +439,7 @@ export default function CourseManagement() {
                 <FormItem>
                   <FormLabel className="text-white">Descrição</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Digite a descrição do curso"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
+                    <Textarea placeholder="Digite a descrição do curso" className="min-h-[100px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -531,11 +454,7 @@ export default function CourseManagement() {
               >
                 Cancelar
               </ShadcnButton>
-              <ShadcnButton
-                type="submit"
-                loading={isCreatingCourse}
-                loadingText="Criando..."
-              >
+              <ShadcnButton type="submit" loading={isCreatingCourse} loadingText="Criando...">
                 {isCreatingCourse ? "Criando..." : "Criar Curso"}
               </ShadcnButton>
             </div>
@@ -550,10 +469,7 @@ export default function CourseManagement() {
         footer={null}
       >
         <Form {...editCourseForm}>
-          <form
-            onSubmit={editCourseForm.handleSubmit(handleEditCourseRequest)}
-            className="space-y-4 mt-4 rounded-lg"
-          >
+          <form onSubmit={editCourseForm.handleSubmit(handleEditCourseRequest)} className="space-y-4 mt-4 rounded-lg">
             <FormField
               control={editCourseForm.control}
               name="courseName"
@@ -561,10 +477,7 @@ export default function CourseManagement() {
                 <FormItem className="">
                   <FormLabel className="text-base">Nome do Curso</FormLabel>
                   <FormControl>
-                    <ShadcnInput
-                      placeholder="Digite o nome do curso"
-                      {...field}
-                    />
+                    <ShadcnInput placeholder="Digite o nome do curso" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -577,11 +490,7 @@ export default function CourseManagement() {
                 <FormItem>
                   <FormLabel className="text-base">Descrição</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Digite a descrição do curso"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
+                    <Textarea placeholder="Digite a descrição do curso" className="min-h-[100px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -611,10 +520,7 @@ export default function CourseManagement() {
                     render: (_, record) => (
                       <Space>
                         <div className="cursor-pointer">
-                          <Popconfirm
-                            title="Deseja mesmo remover o modulo?"
-                            onConfirm={() => console.log(record.id)}
-                          >
+                          <Popconfirm title="Deseja mesmo remover o modulo?" onConfirm={() => console.log(record.id)}>
                             <a href="#">
                               <DeleteFilled
                                 style={{ color: "#ff0000", fontSize: "16px" }}
@@ -640,19 +546,13 @@ export default function CourseManagement() {
                       aria-expanded={open}
                       className="w-[200px] justify-between"
                     >
-                      {value
-                        ? availableModules.find((module) => module.id === value)
-                            ?.label
-                        : "Adicione um modulo..."}
+                      {value ? availableModules.find((module) => module.id === value)?.label : "Adicione um modulo..."}
                       <ChevronsUpDown className="opacity-50" />
                     </ShadcnButton>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0 z-[1050]">
                     <Command>
-                      <CommandInput
-                        placeholder="Search framework..."
-                        className="h-9"
-                      />
+                      <CommandInput placeholder="Search framework..." className="h-9" />
                       <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>
@@ -661,22 +561,13 @@ export default function CourseManagement() {
                               key={module.id}
                               value={module.id}
                               onSelect={(currentValue) => {
-                                setValue(
-                                  currentValue === value ? "" : currentValue
-                                );
+                                setValue(currentValue === value ? "" : currentValue);
                                 setOpen(false);
                               }}
                               className="cursor-pointer"
                             >
                               {module.label}
-                              <Check
-                                className={cn(
-                                  "ml-auto",
-                                  value === module.id
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
+                              <Check className={cn("ml-auto", value === module.id ? "opacity-100" : "opacity-0")} />
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -695,19 +586,10 @@ export default function CourseManagement() {
             </FormItem>
 
             <div className="flex justify-end space-x-4">
-              <ShadcnButton
-                type="button"
-                variant="outline"
-                onClick={handleEditModalCancel}
-                disabled={isEditingCourse}
-              >
+              <ShadcnButton type="button" variant="outline" onClick={handleEditModalCancel} disabled={isEditingCourse}>
                 Cancelar
               </ShadcnButton>
-              <ShadcnButton
-                type="submit"
-                loading={isEditingCourse}
-                loadingText="Criando..."
-              >
+              <ShadcnButton type="submit" loading={isEditingCourse} loadingText="Criando...">
                 {isEditingCourse ? "Salvando..." : "Salvar"}
               </ShadcnButton>
             </div>

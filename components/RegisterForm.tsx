@@ -9,7 +9,7 @@ import Link from "next/link";
 import { auth, db, googleProvider } from "@/firebase.config";
 import { useRouter } from "next/navigation";
 import { FirebaseError } from "firebase/app";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { generateRandomPlaceholderUsername } from "@/lib/utils";
 
 export default function RegisterForm() {
@@ -80,14 +80,18 @@ export default function RegisterForm() {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
 
-      // Salvar o usuário no Firestore
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        email: userCredential.user.email,
-        createdAt: new Date().toISOString(),
-        uid: userCredential.user.uid,
-        userRole: 1,
-        userName: generateRandomPlaceholderUsername(),
-      });
+      // Verificar se o usuario já existe na tabela users
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (!userDocSnap.exists()) {
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: userCredential.user.email,
+          createdAt: new Date().toISOString(),
+          uid: userCredential.user.uid,
+          userRole: 1,
+          userName: generateRandomPlaceholderUsername(),
+        });
+      }
 
       router.push("/initialpage");
     } catch (err) {

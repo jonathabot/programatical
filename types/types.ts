@@ -18,6 +18,29 @@ export interface Module {
   order: string;
 }
 
+export interface Class {
+  id: string;
+  classId: string;
+  className: string;
+  classDescription: string;
+  createdAt: string;
+  isActive: boolean;
+  attachedTo_ModuleId: string;
+  order: string;
+}
+
+export interface Steps {
+  id: string;
+  createdAt: string;
+  isActive: boolean;
+  attachedTo_ClassId: string;
+  order: string;
+}
+
+export interface CourseWithModules extends Course {
+  modules: Module[];
+}
+
 export interface CourseModule {
   id: string;
   moduleId: string;
