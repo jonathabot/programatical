@@ -1,9 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import {
-  ProfileOutlined,
-  TeamOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { ProfileOutlined, TeamOutlined, SettingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
 interface AdmButtonProps {
@@ -17,7 +13,7 @@ interface AdmButtonProps {
 const AdmButton = (props: AdmButtonProps) => {
   return (
     <Link
-      className="flex flex-col items-start justify-between h-32 p-4 cursor-pointer select-none rounded-lg"
+      className="flex flex-col items-start justify-between h-32 p-4 cursor-pointer select-none rounded-lg transition-colors duration-200 hover:bg-opacity-100"
       style={{
         backgroundColor: props.bgColor,
         color: props.textColor,
@@ -28,57 +24,30 @@ const AdmButton = (props: AdmButtonProps) => {
         {props.icon}
       </div>
 
-      <span className="font-normal leading-tight overflow-hidden text-ellipsis">
-        {props.name}
-      </span>
+      <span className="font-normal leading-tight overflow-hidden text-ellipsis">{props.name}</span>
     </Link>
   );
 };
 
 export default function AdministrationPage() {
   return (
-    <div className="flex flex-col justify-start items-start w-full h-full py-20">
-      <AdmButton
-        bgColor="#00ff5587"
-        textColor="#ffffff"
-        icon={<ProfileOutlined />}
-        name="Gerenciar Cursos"
-        goToUrl="/course-management"
-      />
-
-      <Separator className="my-20" />
-
-      <div className="flex gap-10">
+    <div className="flex flex-col items-start justify-start w-full mt-16">
+      <Separator className="bg-gray-400" />
+      <div className="flex gap-8 justify-start items-start w-full h-full py-10">
         <AdmButton
-          bgColor="#008cff86"
+          bgColor="rgba(0, 255, 85, 0.4)"
           textColor="#ffffff"
-          icon={<SettingOutlined />}
-          name="Editar/Criar Modulos Avulsos"
-          goToUrl="/modules-management"
-        />
-
-        <AdmButton
-          bgColor="#00d9ff86"
-          textColor="#ffffff"
-          icon={<SettingOutlined />}
-          name="Editar/Criar Aulas Avulsas"
+          icon={<ProfileOutlined />}
+          name="Gerenciar Cursos"
           goToUrl="/course-management"
         />
 
         <AdmButton
-          bgColor="#ea00ff85"
-          textColor="#ffffff"
-          icon={<SettingOutlined />}
-          name="Editar/Criar Etapas Avulsas"
-          goToUrl="/course-management"
-        />
-
-        <AdmButton
-          bgColor="#bbbbbb85"
+          bgColor="rgba(187, 187, 187, 0.4)"
           textColor="#ffffff"
           icon={<TeamOutlined />}
           name="Administrar Alunos"
-          goToUrl="/course-management"
+          goToUrl="/admin-users-list"
         />
       </div>
     </div>

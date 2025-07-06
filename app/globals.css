@@ -89,6 +89,11 @@
   .highlight-row {
     animation: blink 1.5s infinite; /* Tempo da animação */
   }
+
+  .dropdown-content-width-full {
+    width: var(--radix-dropdown-menu-trigger-width);
+    max-height: var(--radix-dropdown-menu-content-available-height);
+  }
 }
 
 .rowClassName1 {
@@ -105,4 +110,9 @@
 .rowClassName1 td:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
 }

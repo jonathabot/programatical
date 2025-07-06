@@ -30,13 +30,8 @@ export default function RegisterForm() {
 
   const signUp = async (email: string, password: string) => {
     try {
-      const registredUser = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const registredUser = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Salvar o usuário no Firestore
       await setDoc(doc(db, "users", registredUser.user.uid), {
         email: registredUser.user.email,
         createdAt: new Date().toISOString(),
@@ -57,9 +52,7 @@ export default function RegisterForm() {
             setErrorMessage("The password is too weak.");
             break;
           case "auth/email-already-in-use":
-            setErrorMessage(
-              "This email address is already in use by another account."
-            );
+            setErrorMessage("This email address is already in use by another account.");
           case "auth/invalid-email":
             setErrorMessage("This email address is invalid.");
             break;
@@ -80,7 +73,6 @@ export default function RegisterForm() {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
 
-      // Verificar se o usuario já existe na tabela users
       const userDocRef = doc(db, "users", userCredential.user.uid);
       const userDocSnap = await getDoc(userDocRef);
       if (!userDocSnap.exists()) {
@@ -101,9 +93,7 @@ export default function RegisterForm() {
 
   return (
     <div className="flex flex-col items-center justify-center w-96 max-w-md p-8 space-y-6">
-      <GradientText className="text-3xl text-center">
-        Comece a sua jornada
-      </GradientText>
+      <GradientText className="text-3xl text-center">Comece a sua jornada</GradientText>
       <form onSubmit={handleSubmit} className="w-full   space-y-4">
         <div>
           <label htmlFor="email" className="sr-only">
@@ -142,8 +132,7 @@ export default function RegisterForm() {
             required
           />
           <label htmlFor="accept-terms" className="ml-2 text-sm text-gray-300">
-            Ao criar uma conta, você concorda com nossos Termos de Serviço e
-            Política de Privacidade
+            Ao criar uma conta, você concorda com nossos Termos de Serviço e Política de Privacidade
           </label>
         </div>
         <Button
@@ -165,12 +154,7 @@ export default function RegisterForm() {
         </div>
       </div>
       <Button variant="secondary" className="w-full" onClick={signInWithGoogle}>
-        <svg
-          className="w-5 h-5 mr-2"
-          viewBox="0 0 21 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="w-5 h-5 mr-2" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clipPath="url(#clip0_13183_10121)">
             <path
               d="M20.3081 10.2303C20.3081 9.55056 20.253 8.86711 20.1354 8.19836H10.7031V12.0492H16.1046C15.8804 13.2911 15.1602 14.3898 14.1057 15.0879V17.5866H17.3282C19.2205 15.8449 20.3081 13.2728 20.3081 10.2303Z"
@@ -191,12 +175,7 @@ export default function RegisterForm() {
           </g>
           <defs>
             <clipPath id="clip0_13183_10121">
-              <rect
-                width="20"
-                height="20"
-                fill="white"
-                transform="translate(0.5)"
-              />
+              <rect width="20" height="20" fill="white" transform="translate(0.5)" />
             </clipPath>
           </defs>
         </svg>

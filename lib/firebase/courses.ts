@@ -1,6 +1,19 @@
 import { db } from "@/firebase.config";
 import { getDocs, collection, doc, getDoc, addDoc, updateDoc, query, where, writeBatch } from "firebase/firestore";
-import { Course, Module, CourseWithModules, Class } from "@/types/types";
+import {
+  Course,
+  Module,
+  CourseWithModules,
+  Class,
+  Step,
+  TextStep,
+  MultipleChoiceStep,
+  DragAndDropStep,
+  ClassCompletion,
+  ModuleCompletion,
+  CourseCompletion,
+  EnrollmentCourse,
+} from "@/types/types";
 
 const getCourses = async (): Promise<Course[]> => {
   const coursesCollectionRef = collection(db, "courses");
@@ -66,7 +79,6 @@ const getCourseWithModules = async (docId: string): Promise<CourseWithModules | 
       active: courseData?.active || false,
     };
 
-    // modulos do curso
     const modules: Module[] = await getModulesForCourse(courseInfo.courseId);
 
     return {
@@ -78,24 +90,6 @@ const getCourseWithModules = async (docId: string): Promise<CourseWithModules | 
     return null;
   }
 };
-
-// const getModules = async (courseId: string): Promise<Module[]> => {
-//   try {
-//     const modulesCollectionRef = collection(db, "modules");
-//     const q = query(modulesCollectionRef, where("courseId", "==", courseId));
-//     const querySnapshot = await getDocs(q);
-
-//     const modules: Module[] = [];
-//     querySnapshot.forEach((doc) => {
-//         modules.push({ id: doc.id, ...doc.data() } as Module);
-//     });
-
-//     return modules;
-// } catch (error) {
-//     console.error("Error fetching modules:", error);
-//     throw error;
-// }
-// };
 
 const getModulesForCourse = async (courseId: string): Promise<Module[]> => {
   const modulesCollectionRef = collection(db, "modules");
@@ -133,6 +127,109 @@ const getModulesClasses = async (moduleId: string): Promise<Class[]> => {
       attachedTo_ModuleId: doc.data().attachedTo_ModuleId,
     }))
     .sort((a, b) => a.order - b.order);
+};
+
+const getModuleInformations = async (docId: string): Promise<Module> => {
+  const moduleDocRef = doc(db, "modules", docId);
+  const response = await getDoc(moduleDocRef);
+  return response.data() as Module;
+};
+
+const getClassInformations = async (docId: string): Promise<Class> => {
+  const classDocRef = doc(db, "classes", docId);
+  const response = await getDoc(classDocRef);
+  return response.data() as Class;
+};
+
+const getClassesSteps = async (classId: string): Promise<Step[]> => {
+  const stepsCollectionRef = collection(db, "steps");
+  const stepsQuery = query(stepsCollectionRef, where("attachedTo_ClassId", "==", classId));
+  const stepsSnapshot = await getDocs(stepsQuery);
+
+  return stepsSnapshot.docs
+    .map((doc) => ({
+      id: doc.id,
+      stepName: doc.data().stepName,
+      stepType: doc.data().stepType,
+      isActive: doc.data().isActive,
+      order: doc.data().order,
+      createdAt: doc.data().createdAt,
+      attachedTo_ClassId: doc.data().attachedTo_ClassId,
+    }))
+    .sort((a, b) => a.order - b.order);
+};
+
+const getStep = async (stepId: string): Promise<TextStep | MultipleChoiceStep | DragAndDropStep | null> => {
+  const stepDocRef = doc(db, "steps", stepId);
+  const response = await getDoc(stepDocRef);
+
+  if (!response.exists()) {
+    return null;
+  }
+
+  const stepData = response.data();
+  const baseStep = {
+    id: response.id,
+    stepName: stepData?.stepName || "",
+    stepType: stepData?.stepType || "",
+    isActive: stepData?.isActive || false,
+    order: stepData?.order || 0,
+    createdAt: stepData?.createdAt || "",
+    attachedTo_ClassId: stepData?.attachedTo_ClassId || "",
+  };
+
+  if (stepData?.stepType === "Text") {
+    return {
+      ...baseStep,
+      stepType: "Text",
+      content: stepData?.content || "",
+    } as TextStep;
+  } else if (stepData?.stepType === "MultipleChoice") {
+    return {
+      ...baseStep,
+      stepType: "MultipleChoice",
+      question: stepData?.question || {
+        statement: "",
+        options: [],
+        correctOptionId: -1,
+      },
+      isVerified: stepData?.isVerified || false,
+      onSelect: () => {},
+    } as MultipleChoiceStep;
+  } else if (stepData?.stepType === "DragAndDrop") {
+    return {
+      ...baseStep,
+      stepType: "DragAndDrop",
+      question: stepData?.question || {
+        statement: "",
+        words: [],
+        correctWordIds: [],
+      },
+      isVerified: stepData?.isVerified || false,
+      onSelect: () => {},
+    } as DragAndDropStep;
+  }
+
+  return null;
+};
+
+const getUserModuleClassesCompletion = async (moduleDocId: string, userUid: string): Promise<ClassCompletion[]> => {
+  try {
+    const classCompletionsRef = collection(db, "classCompletions");
+    const q = query(classCompletionsRef, where("moduleDocId", "==", moduleDocId), where("userUid", "==", userUid));
+
+    const querySnapshot = await getDocs(q);
+    const completions: ClassCompletion[] = [];
+
+    querySnapshot.forEach((doc) => {
+      completions.push(doc.data() as ClassCompletion);
+    });
+
+    return completions;
+  } catch (error) {
+    console.error("Error fetching class completions:", error);
+    return [];
+  }
 };
 
 const updateDeactivateCourse = async (docId: string): Promise<boolean> => {
@@ -253,6 +350,18 @@ const updateClassInfo = async (docId: string, updatedClass: Omit<Class, "id">): 
   }
 };
 
+const updateStep = async (docId: string, updatedStep: Omit<Step, "id">): Promise<boolean> => {
+  try {
+    const stepDocRef = doc(db, "steps", docId);
+    await updateDoc(stepDocRef, updatedStep);
+    console.log("Etapa atualizada com sucesso!");
+    return true;
+  } catch (error) {
+    console.error("Erro ao atualizar a etapa:", error);
+    return false;
+  }
+};
+
 export const postCourse = async (newCourse: Omit<Course, "id">): Promise<string | null> => {
   try {
     const coursesCollectionRef = collection(db, "courses");
@@ -284,8 +393,105 @@ const postClass = async (newClass: Omit<Class, "id">): Promise<string | null> =>
     console.log("Aula criada com sucesso. ID Firebase Doc do Aula:", docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error("Erro ao criar o modulo:", error);
+    console.error("Erro ao criar a Aula:", error);
     return null;
+  }
+};
+
+const postStep = async (newStep: Omit<Step, "id">): Promise<string | null> => {
+  try {
+    const stepsCollectionRef = collection(db, "steps");
+    const docRef = await addDoc(stepsCollectionRef, newStep);
+    console.log("Etapa criada com sucesso. ID Firebase Doc do Aula:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Erro ao criar a etapa:", error);
+    return null;
+  }
+};
+
+const postClassCompletion = async (newClassCompletion: Omit<ClassCompletion, "id">): Promise<string | null> => {
+  try {
+    const classCompletionsCollectionRef = collection(db, "classCompletions");
+    const docRef = await addDoc(classCompletionsCollectionRef, newClassCompletion);
+    console.log("Aula concluída com sucesso. ID Firebase Doc do Aula:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Erro ao criar a aula concluída:", error);
+    return null;
+  }
+};
+
+const getUserModuleCompletions = async (courseId: string, userUid: string): Promise<ModuleCompletion[]> => {
+  try {
+    const moduleCompletionsRef = collection(db, "moduleCompletions");
+    const q = query(moduleCompletionsRef, where("courseId", "==", courseId), where("userUid", "==", userUid));
+
+    const querySnapshot = await getDocs(q);
+    const completions: ModuleCompletion[] = [];
+
+    querySnapshot.forEach((doc) => {
+      completions.push({ id: doc.id, ...doc.data() } as ModuleCompletion);
+    });
+
+    return completions;
+  } catch (error) {
+    console.error("Error fetching module completions:", error);
+    return [];
+  }
+};
+
+const postModuleCompletion = async (newModuleCompletion: Omit<ModuleCompletion, "id">): Promise<string | null> => {
+  try {
+    const moduleCompletionsCollectionRef = collection(db, "moduleCompletions");
+    const docRef = await addDoc(moduleCompletionsCollectionRef, newModuleCompletion);
+    console.log("Módulo concluído com sucesso. ID Firebase Doc:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Erro ao criar o módulo concluído:", error);
+    return null;
+  }
+};
+
+const postCourseCompletion = async (newCourseCompletion: Omit<CourseCompletion, "id">): Promise<string | null> => {
+  try {
+    const docRef = await addDoc(collection(db, "courseCompletions"), newCourseCompletion);
+    console.log("Course Completion written with ID: ", docRef.id);
+    return docRef.id;
+  } catch (e) {
+    console.error("Error adding course completion: ", e);
+    return null;
+  }
+};
+
+const postEnrollmentCourse = async (newEnrollment: Omit<EnrollmentCourse, "id">): Promise<string | null> => {
+  try {
+    const enrollmentCollectionRef = collection(db, "coursesEnrollments");
+    const docRef = await addDoc(enrollmentCollectionRef, newEnrollment);
+    console.log("Enrollment course created with ID: ", docRef.id);
+    return docRef.id;
+  } catch (e) {
+    console.error("Error adding enrollment course: ", e);
+    return null;
+  }
+};
+
+const getUserEnrollments = async (userUid: string): Promise<EnrollmentCourse[]> => {
+  try {
+    const enrollmentsRef = collection(db, "coursesEnrollments");
+    const q = query(enrollmentsRef, where("userUid", "==", userUid));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as EnrollmentCourse)
+    );
+  } catch (error) {
+    console.error("Error fetching user enrollments:", error);
+    return [];
   }
 };
 
@@ -308,13 +514,22 @@ export const getOnGoingCourses = async () => {
 
 export const getCourseWithModulesByDocId = async (courseId: string) => {
   const courseWithModules = await getCourseWithModules(courseId);
-
   return courseWithModules;
 };
 
 export const getCourseById = async (courseId: string) => {
   const course = await getCourse(courseId);
   return course;
+};
+
+export const getModuleInfoByDocId = async (docId: string) => {
+  const module = await getModuleInformations(docId);
+  return module;
+};
+
+export const getClassInfoByDocId = async (docId: string) => {
+  const _class = await getClassInformations(docId);
+  return _class;
 };
 
 export const deactivateCourseRequest = async (docId: string) => {
@@ -352,12 +567,68 @@ export const updateClassInformations = async (docId: string, updateClass: Omit<C
   return updateResponse;
 };
 
+export const updateStepInformations = async (docId: string, updatedStep: Omit<Step, "id">) => {
+  const updateResponse = await updateStep(docId, updatedStep);
+  return updateResponse;
+};
+
 export const createClass = async (newClass: Omit<Class, "id">) => {
   const postResponse = await postClass(newClass);
+  return postResponse;
+};
+
+export const createStep = async (newStep: Omit<Step, "id">) => {
+  const postResponse = await postStep(newStep);
   return postResponse;
 };
 
 export const getClassesFromModule = async (moduleId: string) => {
   const getResponse = await getModulesClasses(moduleId);
   return getResponse;
+};
+
+export const getStepsFromClass = async (classId: string) => {
+  const getResponse = await getClassesSteps(classId);
+  return getResponse;
+};
+
+export const getStepInformations = async (stepId: string) => {
+  const getResponse = await getStep(stepId);
+  return getResponse;
+};
+
+export const classCompletionRequest = async (newClassCompletion: Omit<ClassCompletion, "id">) => {
+  console.log(newClassCompletion);
+  const postResponse = await postClassCompletion(newClassCompletion);
+  return postResponse;
+};
+
+export const getUserClassesCompletionsFromModuleByDocId = async (moduleDocId: string, userUid: string) => {
+  const getResponse = await getUserModuleClassesCompletion(moduleDocId, userUid);
+  return getResponse;
+};
+
+export const moduleCompletionRequest = async (newModuleCompletion: Omit<ModuleCompletion, "id">) => {
+  const postResponse = await postModuleCompletion(newModuleCompletion);
+  return postResponse;
+};
+
+export const getUserModuleCompletionsRequest = async (courseId: string, userUid: string) => {
+  const completions = await getUserModuleCompletions(courseId, userUid);
+  return completions;
+};
+
+export const courseCompletionRequest = async (newCourseCompletion: Omit<CourseCompletion, "id">) => {
+  const postResponse = await postCourseCompletion(newCourseCompletion);
+  return postResponse;
+};
+
+export const enrollCourseRequest = async (newEnrollment: Omit<EnrollmentCourse, "id">) => {
+  const postResponse = await postEnrollmentCourse(newEnrollment);
+  return postResponse;
+};
+
+export const getUserEnrollmentsRequest = async (userUid: string) => {
+  const enrollments = await getUserEnrollments(userUid);
+  return enrollments;
 };

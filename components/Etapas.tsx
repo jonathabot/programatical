@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { Label } from "@radix-ui/react-label";
@@ -17,7 +17,7 @@ interface EtapaPerguntaMultiplaEscolhaProps {
     idOpcaoCorreta: number;
   };
   isVerified: boolean;
-  onSelect: (selectedOptionId: number) => void;
+  onSelect: (selectedOptionId: number | null) => void;
 }
 
 interface EtapaArrasta {
@@ -27,7 +27,7 @@ interface EtapaArrasta {
     idsPalavrasCorretas: number[];
   };
   isVerified: boolean;
-  onSelect: (selectedOptionId: number) => void;
+  onSelect: (selectedOptionId: number | null) => void;
 }
 
 interface opcao {
@@ -37,21 +37,22 @@ interface opcao {
 
 export function EtapaTexto({ content }: EtapaTextoProps) {
   return (
-    <ScrollArea className="border border-zinc-700 rounded-md bg-white text-black">
+    <ScrollArea className="border border-zinc-700 rounded-md text-white">
       <div className="p-4 text-md">{content}</div>
     </ScrollArea>
   );
 }
 
-export function EtapaPerguntaMultiplaEscolha({
-  pergunta,
-  isVerified,
-  onSelect,
-}: EtapaPerguntaMultiplaEscolhaProps) {
+export function EtapaPerguntaMultiplaEscolha({ pergunta, isVerified, onSelect }: EtapaPerguntaMultiplaEscolhaProps) {
   const { enunciado, opcoes, idOpcaoCorreta } = pergunta;
-  const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(
-    null
-  );
+  const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!isVerified) {
+      setRespostaSelecionada(null);
+      onSelect(null);
+    }
+  }, [isVerified, onSelect]);
 
   return (
     <div className="w-full h-full flex flex-col justify-evenly">
@@ -63,33 +64,23 @@ export function EtapaPerguntaMultiplaEscolha({
         }}
         className="w-full"
         disabled={isVerified}
+        value={respostaSelecionada?.toString()}
       >
         {opcoes.map((option: opcao) => (
           <div key={option.id}>
-            <RadioGroupItem
-              value={option.id.toString()}
-              id={`option-${option.id}`}
-            />
+            <RadioGroupItem value={option.id.toString()} id={`option-${option.id}`} />
             <Label
               htmlFor={`option-${option.id}`}
               className={`flex items-center justify-center text-center rounded-lg h-[75px] text-black text-sm select-none 
               ${!isVerified ? "hover:cursor-pointer" : ""}
+              ${respostaSelecionada === option.id && !isVerified ? "bg-cyan-500" : ""}
               ${
-                respostaSelecionada === option.id && !isVerified
-                  ? "bg-cyan-500"
-                  : ""
-              }
-              ${
-                respostaSelecionada === option.id &&
-                isVerified &&
-                respostaSelecionada === idOpcaoCorreta
+                respostaSelecionada === option.id && isVerified && respostaSelecionada === idOpcaoCorreta
                   ? "bg-green-500"
                   : ""
               }
               ${
-                respostaSelecionada === option.id &&
-                isVerified &&
-                respostaSelecionada !== idOpcaoCorreta
+                respostaSelecionada === option.id && isVerified && respostaSelecionada !== idOpcaoCorreta
                   ? "bg-red-500"
                   : ""
               }
@@ -105,15 +96,16 @@ export function EtapaPerguntaMultiplaEscolha({
   );
 }
 
-export function EtapaPerguntaArraste({
-  pergunta,
-  isVerified,
-  onSelect,
-}: EtapaArrasta) {
+export function EtapaPerguntaArraste({ pergunta, isVerified, onSelect }: EtapaArrasta) {
   const { enunciado, palavras, idsPalavrasCorretas } = pergunta;
-  const [palavrasSelecionadas, setPalavrasSelecionadas] = useState<
-    { id: number; palavra: string }[]
-  >([]);
+  const [palavrasSelecionadas, setPalavrasSelecionadas] = useState<{ id: number; palavra: string }[]>([]);
+
+  useEffect(() => {
+    if (!isVerified) {
+      setPalavrasSelecionadas([]);
+      onSelect(null);
+    }
+  }, [isVerified, onSelect]);
 
   const isCorreta = (id: number) => idsPalavrasCorretas.includes(id);
 
@@ -127,35 +119,29 @@ export function EtapaPerguntaArraste({
             <div
               key={palavra.id}
               className={`flex items-center justify-center p-2 text-black rounded-lg leading-3 h-12 ${
-                isVerified
-                  ? isCorreta(palavra.id)
-                    ? "bg-green-500"
-                    : "bg-red-500"
-                  : "bg-white"
+                isVerified ? (isCorreta(palavra.id) ? "bg-green-500" : "bg-red-500") : "bg-white"
               }`}
             >
               <span>{palavra.palavra}</span>
             </div>
           ))
         ) : (
-          <span className="text-md text-stone-500 col-span-3">
-            Selecione uma palavra.
-          </span>
+          <span className="text-md text-stone-500 col-span-3">Selecione uma palavra.</span>
         )}
       </div>
 
       <div className="w-full grid grid-cols-3 gap-4 p-4 text-center select-none h-1/3">
         {palavras
-          .filter(
-            (palavra) => !palavrasSelecionadas.some((p) => p.id === palavra.id)
-          )
+          .filter((palavra) => !palavrasSelecionadas.some((p) => p.id === palavra.id))
           .map((palavra) => (
             <div
               key={palavra.id}
               className="flex items-center justify-center bg-white p-2 text-black rounded-lg w-full h-12 cursor-pointer leading-3"
               onClick={() => {
-                setPalavrasSelecionadas([...palavrasSelecionadas, palavra]);
-                onSelect(palavra.id);
+                if (!isVerified) {
+                  setPalavrasSelecionadas([...palavrasSelecionadas, palavra]);
+                  onSelect(palavra.id);
+                }
               }}
             >
               <span>{palavra.palavra}</span>
@@ -177,12 +163,7 @@ export function AulaConcluida() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </div>
       <span className="text-2xl font-bold">Aula concluída!</span>

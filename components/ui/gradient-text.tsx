@@ -6,17 +6,9 @@ interface GradientTextProps {
   className?: string;
 }
 
-export default function GradientText({
-  children,
-  className,
-}: GradientTextProps) {
+export default function GradientText({ children, className }: GradientTextProps) {
   return (
-    <span
-      className={cn(
-        "text-transparent bg-clip-text bg-radial-gradient-text-home text-center",
-        className
-      )}
-    >
+    <span className={cn("text-transparent bg-clip-text bg-radial-gradient-text-home text-center", className)}>
       {children}
     </span>
   );
