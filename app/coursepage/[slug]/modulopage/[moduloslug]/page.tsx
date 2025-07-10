@@ -9,6 +9,7 @@ import {
   getClassesFromModule,
   getModuleInfoByDocId,
   getUserClassesCompletionsFromModuleByDocId,
+  getCourseById,
 } from "@/lib/firebase/courses";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import BackButton from "@/components/BackButton";
@@ -25,6 +26,7 @@ export default function ModuloPage() {
   const [userClassesCompletions, setUserClassesCompletions] = useState<ClassCompletion[]>([]);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [showModuleCompletionAlert, setShowModuleCompletionAlert] = useState(false);
+  const [courseName, setCourseName] = useState<string>("");
 
   const isLessonCompleted = (classId: string) => {
     return userClassesCompletions.some((completion) => completion.classId === classId);
@@ -66,6 +68,9 @@ export default function ModuloPage() {
         setActiveClasses(activeClasses);
         setUserClassesCompletions(userModuleClassCompletionsResponse);
 
+        const course = await getCourseById(String(slug));
+        setCourseName(course?.courseName || "");
+
         const allActiveClassesCompleted =
           activeClasses.length > 0 &&
           activeClasses.every((_class) =>
@@ -84,7 +89,7 @@ export default function ModuloPage() {
     });
 
     return () => unsubscribe();
-  }, [moduloslug, router]);
+  }, [moduloslug, router, slug]);
 
   if (isAuthLoading) {
     return <div className="w-1/2 text-white p-6 text-center">Carregando...</div>;
@@ -103,7 +108,7 @@ export default function ModuloPage() {
         </Alert>
       )}
       <div className="w-full mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-normal mb-1">Curso: Arquitetura de Software</h2>
+        <h2 className="text-lg font-normal mb-1">Curso: {courseName || "..."}</h2>
         <p className="text-sm text-zinc-400">Módulo: {moduleInfo?.order}</p>
       </div>
 

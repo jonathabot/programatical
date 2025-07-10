@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AulaConcluida, EtapaPerguntaArraste, EtapaPerguntaMultiplaEscolha, EtapaTexto } from "@/components/Etapas";
 import { useParams, useRouter } from "next/navigation";
-import { Class, Step, TextStep, MultipleChoiceStep, DragAndDropStep, ClassCompletion } from "@/types/types";
+import { Class, Step, TextStep, MultipleChoiceStep, DragAndDropStep, ClassCompletion, Module } from "@/types/types";
 import {
   getClassInfoByDocId,
   getStepsFromClass,
@@ -16,6 +16,7 @@ import {
   moduleCompletionRequest,
   getCourseWithModulesByDocId,
   courseCompletionRequest,
+  getCourseById,
 } from "@/lib/firebase/courses";
 import { updateUserPointsRequest } from "@/lib/firebase/ranking";
 import { getAuth } from "firebase/auth";
@@ -53,6 +54,8 @@ export default function AulaPage() {
   const [isLastActiveClass, setIsLastActiveClass] = useState(false);
   const [showModuleCompletion, setShowModuleCompletion] = useState(false);
   const [showCourseCompletion, setShowCourseCompletion] = useState(false);
+  const [courseName, setCourseName] = useState("");
+  const [moduleInfo, setModuleInfo] = useState<Module | null>(null);
 
   const checkIfLastActiveClass = async () => {
     try {
@@ -149,10 +152,17 @@ export default function AulaPage() {
       setClassInfo(_class);
       setClassSteps(completeSteps);
       await checkIfLastActiveClass();
+
+      const course = await getCourseById(String(slug));
+      setCourseName(course?.courseName || "");
+
+      const module = await getModuleInfoByDocId(String(moduloslug));
+      setModuleInfo(module);
+
       setIsLoading(false);
     };
     fetchClassSteps();
-  }, [aulaslug, moduloslug]);
+  }, [aulaslug, moduloslug, slug]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -205,7 +215,9 @@ export default function AulaPage() {
                 : "Etapas concluídas!"}
             </span>
             <div className="flex flex-col items-end">
-              <span className="text-sm">Arquitetura de Software</span>
+              <span className="text-sm">
+                {courseName || "..."} {moduleInfo ? `| Módulo ${moduleInfo.order}` : ""}
+              </span>
               <span className="text-sm">Aula {classInfo?.order}</span>
             </div>
           </div>

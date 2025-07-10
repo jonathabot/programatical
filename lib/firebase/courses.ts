@@ -287,7 +287,6 @@ const updateModulesOrdering = async (modules: Module[]): Promise<boolean> => {
       });
     });
     await batch.commit();
-    console.log("Modulos atualizados com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar a ordem dos modulos:", error);
@@ -306,7 +305,6 @@ const updateModuleClassesOrdering = async (classes: Class[]): Promise<boolean> =
       });
     });
     await batch.commit();
-    console.log("Aulas atualizadas com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar a ordem dos aulas:", error);
@@ -318,7 +316,6 @@ const updateCourseInfo = async (docId: string, updatedCourse: Omit<Course, "id">
   try {
     const courseDocRef = doc(db, "courses", docId);
     await updateDoc(courseDocRef, updatedCourse);
-    console.log("Curso atualizado com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar o curso:", error);
@@ -330,7 +327,6 @@ const updateModuleInfo = async (docId: string, updatedModule: Omit<Module, "id">
   try {
     const moduleDocRef = doc(db, "modules", docId);
     await updateDoc(moduleDocRef, updatedModule);
-    console.log("Modulo atualizado com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar o modulo:", error);
@@ -342,7 +338,6 @@ const updateClassInfo = async (docId: string, updatedClass: Omit<Class, "id">): 
   try {
     const classDocRef = doc(db, "classes", docId);
     await updateDoc(classDocRef, updatedClass);
-    console.log("Aula atualizada com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar a aula:", error);
@@ -354,7 +349,6 @@ const updateStep = async (docId: string, updatedStep: Omit<Step, "id">): Promise
   try {
     const stepDocRef = doc(db, "steps", docId);
     await updateDoc(stepDocRef, updatedStep);
-    console.log("Etapa atualizada com sucesso!");
     return true;
   } catch (error) {
     console.error("Erro ao atualizar a etapa:", error);
@@ -366,7 +360,6 @@ export const postCourse = async (newCourse: Omit<Course, "id">): Promise<string 
   try {
     const coursesCollectionRef = collection(db, "courses");
     const docRef = await addDoc(coursesCollectionRef, newCourse);
-    console.log("Curso criado com sucesso. ID Firebase Doc do curso:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Erro ao criar o curso:", error);
@@ -378,7 +371,6 @@ export const postModule = async (newModule: Omit<Module, "id">): Promise<string 
   try {
     const modulesCollectionRef = collection(db, "modules");
     const docRef = await addDoc(modulesCollectionRef, newModule);
-    console.log("Modulo criado com sucesso. ID Firebase Doc do Modulo:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Erro ao criar o modulo:", error);
@@ -390,7 +382,6 @@ const postClass = async (newClass: Omit<Class, "id">): Promise<string | null> =>
   try {
     const classesCollectionRef = collection(db, "classes");
     const docRef = await addDoc(classesCollectionRef, newClass);
-    console.log("Aula criada com sucesso. ID Firebase Doc do Aula:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Erro ao criar a Aula:", error);
@@ -402,7 +393,6 @@ const postStep = async (newStep: Omit<Step, "id">): Promise<string | null> => {
   try {
     const stepsCollectionRef = collection(db, "steps");
     const docRef = await addDoc(stepsCollectionRef, newStep);
-    console.log("Etapa criada com sucesso. ID Firebase Doc do Aula:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Erro ao criar a etapa:", error);
@@ -414,7 +404,6 @@ const postClassCompletion = async (newClassCompletion: Omit<ClassCompletion, "id
   try {
     const classCompletionsCollectionRef = collection(db, "classCompletions");
     const docRef = await addDoc(classCompletionsCollectionRef, newClassCompletion);
-    console.log("Aula concluída com sucesso. ID Firebase Doc do Aula:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Erro ao criar a aula concluída:", error);
