@@ -290,6 +290,7 @@ export default function courseEdit() {
 
         editCourseForm.setValue("courseName", courseInfo?.courseName || "");
         editCourseForm.setValue("description", courseInfo?.courseDescription || "");
+        editCourseForm.setValue("isActive", courseInfo?.active ?? false);
 
         setEditingCourse(courseInfo);
         setEditingCourseModules(courseInfo?.modules || []);
@@ -448,32 +449,34 @@ export default function courseEdit() {
         ...editingCourse,
         courseName: editCourseForm.getValues("courseName"),
         courseDescription: editCourseForm.getValues("description"),
+        active: editCourseForm.getValues("isActive"),
       };
 
       console.log("Atualizando curso: ", updatedCourse);
       messageApi.info("Atualizando informações do curso...");
 
-      setEditingCourse(updatedCourse);
-
       try {
         const isUpdated = await updateCourseInformations(editingCourse.id, updatedCourse);
 
         if (isUpdated) {
+          const freshCourse = await getCourseWithModulesByDocId(editingCourse.id);
+          setEditingCourse(freshCourse);
+          editCourseForm.reset({
+            courseName: freshCourse?.courseName || "",
+            description: freshCourse?.courseDescription || "",
+            isActive: freshCourse?.active ?? false,
+          });
           messageApi.success("Curso editado com sucesso.");
         } else {
           throw new Error("Erro ao atualizar o curso");
         }
-
-        editCourseForm.reset({
-          courseName: updatedCourse.courseName,
-          description: updatedCourse.courseDescription,
-        });
 
         setIsEditingCourse(false);
       } catch (error) {
         console.error(error);
         setEditingCourse(previousInfo);
         messageApi.error("Ocorreu um erro ao editar o curso.");
+        setIsEditingCourse(false);
       }
     }
     setIsEditingCourse(false);
@@ -1028,6 +1031,28 @@ export default function courseEdit() {
                   )}
                 />
 
+                <FormField
+                  control={editCourseForm.control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 items-end">
+                      <FormLabel className="text-base">Status: </FormLabel>
+                      <FormControl>
+                        <div className="flex gap-2 items-end">
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(checked) => field.onChange(checked)}
+                            checkedIcon={<Check size={12} color="green" className="ml-1 mt-1" />}
+                            uncheckedIcon={<X size={12} color="gray" className="ml-1 mt-1" />}
+                            className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-zinc-700"
+                          />
+                          <span> {field.value ? "✅ Ativo" : "❌ Inativo"}</span>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
                 <div className="flex flex-row justify-end gap-4 items-center">
                   <Button
                     type="button"
@@ -1037,6 +1062,7 @@ export default function courseEdit() {
                       editCourseForm.reset({
                         courseName: editingCourse.courseName || "",
                         description: editingCourse.courseDescription || "",
+                        isActive: editingCourse.active || false,
                       });
                     }}
                     className="w-auto"

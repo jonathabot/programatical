@@ -65,7 +65,7 @@ export default function AvailableCourses() {
         ]);
 
         const enrolledCourseIds = userEnrollments.map((enrollment) => enrollment.courseId);
-        const availableCourses = allCourses.filter((course) => !enrolledCourseIds.includes(course.id));
+        const availableCourses = allCourses.filter((course) => !enrolledCourseIds.includes(course.id) && course.active);
 
         setAvailableCourses(availableCourses);
       } catch (err) {

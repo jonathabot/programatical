@@ -42,7 +42,7 @@ export default function OngoingCourses() {
         ]);
 
         const enrolledCourseIds = userEnrollments.map((enrollment) => enrollment.courseId);
-        const enrolledCourses = allCourses.filter((course) => enrolledCourseIds.includes(course.id));
+        const enrolledCourses = allCourses.filter((course) => enrolledCourseIds.includes(course.id) && course.active);
 
         const progressPromises = enrolledCourses.map(async (course) => {
           const courseWithModules = await getCourseWithModulesByDocId(course.id);
