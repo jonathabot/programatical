@@ -120,15 +120,3 @@ Certifique-se de possuir em seu ambiente:
     Abra o seu navegador e vá para [http://localhost:3000](http://localhost:3000).
 
 ---
-
-## 🎓 Informações do TCC (Ajuste conforme necessário)
-
-Substitua as informações abaixo com os dados oficiais de apresentação do projeto:
-
-*   **Instituição:** [Nome da sua Universidade ou Faculdade]
-*   **Curso:** [Nome do seu Curso, ex: Análise e Desenvolvimento de Sistemas / Ciência da Computação]
-*   **Autores:**
-    *   [Seu Nome Completo] - [Seu E-mail / LinkedIn]
-    *   [Nome do Integrante 2] - [E-mail / LinkedIn]
-*   **Orientador(a):** [Nome do Orientador]
-*   **Ano:** 2026
