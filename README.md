@@ -1,122 +1,120 @@
 # Programatical 🚀
 
-> **Plataforma Educacional Interativa e Gamificada para Ensino de Programação**
+> **Interactive and Gamified Educational Platform for Teaching Programming**
 >
-> Este projeto foi desenvolvido como **Trabalho de Conclusão de Curso (TCC)** para obter o título de graduação no curso de tecnologia.
+> This project was developed as a **Capstone Project** to complete a **Technology Degree**.
 
 ---
 
-## 📋 Sobre o Projeto
+## 📋 About the Project
 
-O **Programatical** é uma plataforma web interativa projetada para revolucionar o ensino de conceitos de programação e engenharia de software. Utilizando metodologias de gamificação e aprendizado dinâmico, o sistema visa engajar os estudantes e consolidar conhecimentos teóricos de forma prática e gratuita.
+**Programatical** is an interactive web platform designed to revolutionize how programming and software engineering concepts are taught. By leveraging gamification and dynamic learning methodologies, the system aims to engage students and solidify theoretical concepts through practical, free hands-on practice.
 
-Os tópicos abordados incluem conceitos essenciais do desenvolvimento moderno:
-*   🌀 **Scrum e Metodologias Ágeis**
-*   🏗️ **Arquitetura de Software**
-*   🛡️ **Princípios SOLID**
-*   🗺️ **Domain-Driven Design (DDD)**
-*   🌿 **Git e Fluxos de Trabalho**
-
----
-
-## ✨ Funcionalidades Principais
-
-### 🎓 Área do Aluno
-*   **Dashboard Personalizado:** Interface centralizada exibindo os cursos em andamento (com progresso) e cursos disponíveis para novas inscrições.
-*   **Aulas em Etapas Interativas:** Cada lição é estruturada em etapas dinâmicas:
-    *   **Etapas de Leitura:** Conteúdo teórico exposto de forma clara e adaptada.
-    *   **Perguntas de Múltipla Escolha:** Desafios com feedback em tempo real para fixação teórica.
-    *   **Desafios de Ordenação/Associação:** Exercícios interativos onde o estudante clica e ordena palavras para responder aos enunciados.
-*   **Pontuação e Gamificação:** O progresso do aluno nas aulas rende pontos que contam para o placar de classificação.
-*   **Ranking em Tempo Real:** Tabela de classificação competitiva exibindo os melhores desempenhos, com filtros para classificação geral ("Todos os tempos") e semanal ("7 dias").
-*   **Perfil do Usuário:** Gerenciamento das informações do estudante logado.
-
-### 🛠️ Painel Administrativo (Professor/Administrador)
-*   **Gerenciador de Conteúdo:** Ferramenta dedicada para criação, edição e exclusão de Cursos, Módulos, Aulas e suas respectivas Etapas (Questões, Textos).
-*   **Formulários de Cadastro Dinâmicos:** Validação inteligente utilizando Zod e React Hook Form para cadastro de novos materiais didáticos de forma segura.
+Topics covered include core modern software engineering concepts:
+* 🌀 **Scrum and Agile Methodologies**
+* 🏗️ **Software Architecture**
+* 🛡️ **SOLID Principles**
+* 🗺️ **Domain-Driven Design (DDD)**
+* 🌿 **Git and Workflows**
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## ✨ Key Features
 
-A stack de tecnologia selecionada prioriza a interatividade, performance e agilidade no desenvolvimento:
+### 🎓 Student Area
+* **Personalized Dashboard:** Centralized interface displaying active courses (with progress tracking) and available courses for new enrollments.
+* **Multi-Step Interactive Lessons:** Each lesson is structured into dynamic stages:
+  * **Reading Stages:** Theoretical content presented in a clear, accessible format.
+  * **Multiple-Choice Questions:** Challenges with real-time feedback for theoretical reinforcement.
+  * **Ordering/Matching Challenges:** Interactive exercises where students click and arrange words to solve prompts.
+* **Scoring and Gamification:** Lesson progress earns points toward a live leaderboard.
+* **Real-Time Leaderboard:** Competitive ranking table featuring top performers, filtered by overall ("All-Time") and weekly ("7 days") performance.
+* **User Profile:** Management of logged-in student account details.
 
-*   **Core:** [Next.js 14](https://nextjs.org/) (App Router), [React 18](https://react.dev/) e [TypeScript](https://www.typescriptlang.org/)
-*   **Estilização:** [TailwindCSS](https://tailwindcss.com/)
-*   **Banco de Dados & Autenticação:** [Firebase SDK](https://firebase.google.com/) (Firestore para persistência NoSQL e Firebase Auth para autenticação de alunos e administradores)
-*   **Animações:** [Framer Motion](https://www.framer.com/motion/) (para transições dinâmicas de interface e feedback de respostas)
-*   **Componentes de UI:** [Ant Design](https://ant.design/) (Pro Components) e primitivos da [Radix UI](https://www.radix-ui.com/)
-*   **Validação de Dados:** [Zod](https://zod.dev/) e [React Hook Form](https://react-hook-form.com/)
+### 🛠️ Admin Panel (Instructor/Administrator)
+* **Content Manager:** Dedicated tool to create, edit, and delete Courses, Modules, Lessons, and individual Stages (Quizzes, Texts).
+* **Dynamic Input Forms:** Smart validation using Zod and React Hook Form to safely create new educational materials.
 
 ---
 
-## 📂 Estrutura do Projeto
+## 🛠️ Tech Stack
 
-Abaixo está descrita a organização de diretórios do projeto:
+The chosen tech stack prioritizes interactivity, performance, and development speed:
+
+* **Core:** [Next.js 14](https://nextjs.org/) (App Router), [React 18](https://react.dev/), and [TypeScript](https://www.typescriptlang.org/)
+* **Styling:** [TailwindCSS](https://tailwindcss.com/)
+* **Database & Auth:** [Firebase SDK](https://firebase.google.com/) (Firestore for NoSQL storage and Firebase Auth for student/admin authentication)
+* **Animations:** [Framer Motion](https://www.framer.com/motion/) (for smooth UI transitions and instant answer feedback)
+* **UI Components:** [Ant Design](https://ant.design/) (Pro Components) and [Radix UI](https://www.radix-ui.com/) primitives
+* **Data Validation:** [Zod](https://zod.dev/) and [React Hook Form](https://react-hook-form.com/)
+
+---
+
+## 📂 Project Structure
+
+Below is the directory structure of the application:
 
 ```text
 programatical/
-├── app/                     # Páginas e rotas da aplicação (Next.js App Router)
-│   ├── about-us/            # Informações sobre a plataforma e criadores
-│   ├── administrationpage/  # Interface do painel administrativo
-│   ├── coursepage/          # Tela interativa do curso, módulos e lições
-│   ├── initialpage/         # Dashboard do aluno (cursos e ranking)
-│   ├── login/               # Tela de acesso
-│   ├── register/            # Cadastro de novos alunos
-│   ├── userprofile/         # Perfil do aluno
-│   ├── globals.css          # Estilos globais e tokens do TailwindCSS
-│   └── layout.tsx           # Layout base com provedores de tema e sessão
-├── components/              # Componentes de interface do usuário (UI)
-│   ├── ui/                  # Componentes reutilizáveis menores (Botões, inputs, etc.)
-│   ├── AvailableCourses.tsx # Carousel de novos cursos
-│   ├── Etapas.tsx           # Renderizadores das etapas de aula (Texto, Quiz, Ordenação)
-│   ├── OngoingCourses.tsx   # Cursos em andamento do usuário
-│   └── Ranking.tsx          # Tabela de classificação com filtros de tempo
-├── hooks/                   # Hooks React personalizados para lógica compartilhada
+├── app/                    # Application pages and routes (Next.js App Router)
+│   ├── about-us/           # Platform and team information
+│   ├── administrationpage/ # Admin panel interface
+│   ├── coursepage/         # Interactive course, module, and lesson screens
+│   ├── initialpage/        # Student dashboard (courses and leaderboard)
+│   ├── login/              # Login screen
+│   ├── register/           # New student registration
+│   ├── userprofile/        # Student profile page
+│   ├── globals.css         # Global styles and TailwindCSS tokens
+│   └── layout.tsx          # Base layout with theme and session providers
+├── components/             # User interface (UI) components
+│   ├── ui/                 # Reusable micro-components (Buttons, Inputs, etc.)
+│   ├── AvailableCourses.tsx # Carousel of newly available courses
+│   ├── Etapas.tsx           # Lesson stage renderers (Text, Quiz, Ordering)
+│   ├── OngoingCourses.tsx   # User's active courses
+│   └── Ranking.tsx          # Leaderboard table with time filters
+├── hooks/                  # Custom React hooks for shared logic
 ├── lib/
-│   └── firebase/            # Funções de comunicação CRUD com o Firestore (courses, ranking, users)
-├── types/                   # Interfaces TypeScript que descrevem o modelo de domínio do sistema
-└── firebase.config.ts       # Inicialização e exportação dos serviços do Firebase
+│   └── firebase/           # CRUD communication functions for Firestore (courses, ranking, users)
+├── types/                  # TypeScript interfaces defining domain models
+└── firebase.config.ts       # Firebase service initialization and exports
 ```
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+## 🚀 Getting Started Locally
 
-### Pré-requisitos
-Certifique-se de possuir em seu ambiente:
-*   [Node.js](https://nodejs.org/) (versão 18 ou superior recomendada)
-*   Gerenciador de pacotes `yarn` ou `npm`
+### Prerequisites
+Make sure you have installed in your environment:
+* [Node.js](https://nodejs.org/) (version 18 or higher recommended)
+* `yarn` or `npm` package manager
 
-### Passos para Instalação
+### Installation Steps
 
-1.  **Clonar o repositório:**
-    ```bash
-    git clone https://github.com/seu-usuario/programatical.git
-    cd programatical
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/programatical.git
+   cd programatical
+   ```
 
-2.  **Instalar dependências:**
-    ```bash
-    yarn install
-    # ou
-    npm install
-    ```
+2. **Install dependencies:**
+   ```bash
+   yarn install
+   # or
+   npm install
+   ```
 
-3.  **Configuração do Firebase:**
-    O projeto já vem configurado com uma instância padrão de teste no arquivo `firebase.config.ts`. Para conectar o projeto ao seu próprio banco de dados Firebase:
-    *   Crie um projeto no console do Firebase.
-    *   Ative o **Authentication** (e-mail/senha) e o **Cloud Firestore**.
-    *   Substitua as credenciais no arquivo `firebase.config.ts` ou configure variáveis de ambiente.
+3. **Firebase Configuration:**
+   The project comes pre-configured with a default test instance in `firebase.config.ts`. To connect your own Firebase database:
+   * Create a project in the Firebase Console.
+   * Enable **Authentication** (Email/Password) and **Cloud Firestore**.
+   * Replace credentials in `firebase.config.ts` or set up environment variables.
 
-4.  **Iniciar servidor de desenvolvimento:**
-    ```bash
-    yarn dev
-    # ou
-    npm run dev
-    ```
+4. **Run the development server:**
+   ```bash
+   yarn dev
+   # or
+   npm run dev
+   ```
 
-5.  **Acessar a aplicação:**
-    Abra o seu navegador e vá para [http://localhost:3000](http://localhost:3000).
-
----
+5. **Access the application:**
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
